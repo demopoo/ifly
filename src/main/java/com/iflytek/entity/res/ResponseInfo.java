@@ -1,0 +1,1 @@
+package com.iflytek.entity.res;import lombok.AllArgsConstructor;import lombok.Data;import lombok.NoArgsConstructor;/** * @author: demopoo * @Date: Created in 上午12:01 2018/4/17 * @Des: * @Modifyed By: */@Data@AllArgsConstructor@NoArgsConstructorpublic class ResponseInfo {    private int resp_code;    private String resp_desc;    private int resp_result;}

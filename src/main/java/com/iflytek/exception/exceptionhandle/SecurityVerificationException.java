@@ -1,0 +1,1 @@
+package com.iflytek.exception.exceptionhandle;/** * @author: demopoo * @Date: Created in 上午11:02 2018/4/17 * @Des: 安全参数校验异常 * @Modifyed By: */public class SecurityVerificationException extends RuntimeException {    public SecurityVerificationException(String message) {        super(message);    }}

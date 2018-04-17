@@ -1,0 +1,1 @@
+package com.iflytek.entity.req.in;import lombok.AllArgsConstructor;import lombok.Data;import lombok.NoArgsConstructor;/** * @author: demopoo * @Date: Created in 下午7:52 2018/4/16 * @Des: * @Modifyed By: */@Data@AllArgsConstructor@NoArgsConstructorpublic class RequestContent {    private RequestContentDetail request;}
