@@ -1,7 +1,7 @@
 echo off
 
 set APP_NAME=iflyrecommend.jar
-set CONFIG= -Dlogging.path=../logs -Dspring.config.location=../config/application.yml
+set CONFIG= -Dlogging.path=../logs -Dlogging.config=../config/log4j2.xml -Dspring.config.location=../config/application.yml 
 
 set DEBUG_OPTS=
 if ""%1"" == ""debug"" (
