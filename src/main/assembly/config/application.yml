@@ -1,0 +1,1 @@
+spring:  profiles:    active: dev---spring:  profiles: dev#  redis:#    host: 127.0.0.1#    port: 6379#    password:#    database: 0#    timeout: 1000#    pool:#      max-active: 8#      max-idle: 8#      min-idle: 2#      max-wait: 1000  http:    encoding:      enabled: true      charset: GBK      force: trueserver:  port: 9088
