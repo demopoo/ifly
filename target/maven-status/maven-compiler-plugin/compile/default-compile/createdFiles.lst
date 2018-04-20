@@ -3,6 +3,7 @@ com/iflytek/entity/res/out/ResponseAccessOutDetail.class
 com/iflytek/entity/req/RecommendCommenParams.class
 com/iflytek/entity/res/out/ResponseAccessOut.class
 com/iflytek/util/VerificationSignature.class
+com/iflytek/entity/req/UrlParaInfo.class
 com/iflytek/rest/AccessContrller.class
 com/iflytek/config/RedisObjectSerialize.class
 com/iflytek/config/hbase/HbaseConfig.class
@@ -17,6 +18,7 @@ com/iflytek/entity/res/ResponseItem.class
 com/iflytek/util/AESUtil.class
 com/iflytek/entity/res/ResponseInfo.class
 com/iflytek/exception/exceptionhandle/SecurityVerificationException.class
+com/iflytek/entity/req/LogInfo.class
 com/iflytek/entity/MockResult.class
 com/iflytek/entity/req/in/RequestAccess.class
 com/iflytek/config/hbase/HbaseProperties.class
@@ -24,5 +26,6 @@ com/iflytek/config/RedisConfig.class
 com/iflytek/exception/GlobalException.class
 com/iflytek/entity/req/RequestContent.class
 com/iflytek/util/interceptor/InterceptorAdaptor.class
+com/iflytek/entity/req/OrderEnv.class
 com/iflytek/entity/res/RecommendCommenResult.class
 com/iflytek/entity/req/in/RequestContentDetail.class

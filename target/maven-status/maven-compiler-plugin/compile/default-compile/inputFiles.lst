@@ -2,6 +2,8 @@
 /Users/demopoo/Documents/iflytek/code/IflyRecommend/src/main/java/com/iflytek/config/RedisConfig.java
 /Users/demopoo/Documents/iflytek/code/IflyRecommend/src/main/java/com/iflytek/entity/res/out/ResponseAccessOutDetail.java
 /Users/demopoo/Documents/iflytek/code/IflyRecommend/src/main/java/com/iflytek/util/VerificationSignature.java
+/Users/demopoo/Documents/iflytek/code/IflyRecommend/src/main/java/com/iflytek/entity/req/OrderEnv.java
+/Users/demopoo/Documents/iflytek/code/IflyRecommend/src/main/java/com/iflytek/entity/req/UrlParaInfo.java
 /Users/demopoo/Documents/iflytek/code/IflyRecommend/src/main/java/com/iflytek/entity/res/ResponseContent.java
 /Users/demopoo/Documents/iflytek/code/IflyRecommend/src/main/java/com/iflytek/rest/RecommendController.java
 /Users/demopoo/Documents/iflytek/code/IflyRecommend/src/main/java/com/iflytek/config/hbase/HbaseConfig.java
@@ -19,6 +21,7 @@
 /Users/demopoo/Documents/iflytek/code/IflyRecommend/src/main/java/com/iflytek/config/RedisObjectSerialize.java
 /Users/demopoo/Documents/iflytek/code/IflyRecommend/src/main/java/com/iflytek/entity/req/RecommendCommenParams.java
 /Users/demopoo/Documents/iflytek/code/IflyRecommend/src/main/java/com/iflytek/entity/res/ResponseItem.java
+/Users/demopoo/Documents/iflytek/code/IflyRecommend/src/main/java/com/iflytek/entity/req/LogInfo.java
 /Users/demopoo/Documents/iflytek/code/IflyRecommend/src/main/java/com/iflytek/config/CharacterEncodingFilterConfig.java
 /Users/demopoo/Documents/iflytek/code/IflyRecommend/src/main/java/com/iflytek/util/ConfigUtils.java
 /Users/demopoo/Documents/iflytek/code/IflyRecommend/src/main/java/com/iflytek/entity/res/ResponseInfo.java
