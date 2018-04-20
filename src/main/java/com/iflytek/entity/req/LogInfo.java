@@ -1,0 +1,1 @@
+package com.iflytek.entity.req;/** * @author: demopoo * @Date: Created in 上午10:27 2018/4/20 * @Des: * @Modifyed By: */public class LogInfo {    private String tx_id;    private int msg_id;}
