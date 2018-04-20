@@ -1,0 +1,1 @@
+import lombok.Data;/** * @author: demopoo * @Date: Created in 上午10:17 2018/4/19 * @Des: * @Modifyed By: */@Datapublic class Student {    private String student_name;    private int student_age;}
