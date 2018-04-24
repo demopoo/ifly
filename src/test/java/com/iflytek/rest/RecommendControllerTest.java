@@ -5,6 +5,8 @@ import org.junit.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 
+import java.io.IOException;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -23,12 +25,33 @@ public class RecommendControllerTest extends ControllerBaseTest {
     @Test
     public void testRecOtt() throws Exception {
         MvcResult result = mockMvc.perform(post("/iflytek/api/suggestion/rec_ott")
-                .contentType(MediaType.APPLICATION_XML)
+                .contentType(MediaType.TEXT_XML)
                 .content(testData())
         ).andExpect(status().isOk()).andDo(print()).andReturn();
         System.out.println("result:"+result.getResponse().getContentAsString());
     }
 
+    /**
+     * 测试播放结束推荐接口
+     * @throws IOException
+     */
+    @Test
+    public void testRecVodEnd() throws Exception{
+        MvcResult result = mockMvc.perform(post("/iflytek/api/suggestion/rec_vod_end")
+                .contentType(MediaType.TEXT_XML)
+                .content(testData())
+        ).andExpect(status().isOk()).andDo(print()).andReturn();
+        System.out.println("result:"+result.getResponse().getContentAsString());
+    }
+
+    @Test
+    public void testRecVodRelate() throws Exception{
+        MvcResult result = mockMvc.perform(post("/iflytek/api/suggestion/rec_vod_relate")
+                .contentType(MediaType.TEXT_XML)
+                .content(testData())
+        ).andExpect(status().isOk()).andDo(print()).andReturn();
+        System.out.println("result:"+result.getResponse().getContentAsString());
+    }
 
     private String testData(){
         String xml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
@@ -46,10 +69,10 @@ public class RecommendControllerTest extends ControllerBaseTest {
                 "  <request_source>201028</request_source>  \n" +
                 "  <request_time>20080109101506</request_time>  \n" +
                 "  <content> \n" +
-                "    <uids>111,222,333</uids>  \n" +
+                "    <uids>y_00000000000000,222,333</uids>  \n" +
                 "    <request_time>20170125152411001</request_time>  \n" +
                 "    <app_id>yishiteng20170125</app_id>  \n" +
-                "    <secure_msg>kopbppnmokbdnfjbdkglhcfebjefidcbfliajklij</secure_msg> \n" +
+                "    <secure_msg>jpghljcgaahhechpdigjlmhegkepebbbckdggmcjehfjppglmfefdloiooofpmpkdiniombjaglbokhjeekapnfhnkcgaihp</secure_msg> \n" +
                 "  </content> \n" +
                 "</operation_in>";
         return xml;

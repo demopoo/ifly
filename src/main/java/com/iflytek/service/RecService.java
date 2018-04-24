@@ -20,6 +20,14 @@ public interface RecService {
     ResponseContent getAllRec(RecommendCommonParams reqParams) throws IOException;
 
     /**
+     * 获取点播推荐
+     * @param reqParams
+     * @return
+     * @throws IOException
+     */
+    ResponseContent getDbRec(RecommendCommonParams reqParams) throws IOException;
+
+    /**
      * 获取电影推荐
      * @param reqParams
      * @return
@@ -49,6 +57,9 @@ public interface RecService {
      * @return
      * @throws IOException
      */
-    ResponseContent getFocusRec(RecommendCommonParams reqParams) throws IOException;
+    ResponseContent getKdRec(RecommendCommonParams reqParams) throws IOException;
+
+
+
 
 }

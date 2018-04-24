@@ -10,6 +10,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.io.IOException;
+import java.util.List;
 
 @SpringBootTest(classes = ApplicationStart.class)
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -23,6 +24,12 @@ public class HBaseDaoTest {
     @Test
     public void testGetAppKey() throws IOException{
         System.out.println("yes:"+hBaseDao.getAppKey("2017012515141731"));
+    }
+
+    @Test
+    public void testGetFocus() throws IOException {
+        String  result = hBaseDao.getDbResult("y_00000000000000","rec");
+        System.out.println(result);
     }
 
 }

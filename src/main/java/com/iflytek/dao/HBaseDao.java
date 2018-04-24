@@ -105,13 +105,13 @@ public class HBaseDao {
     }
 
     /**
-     * 获取根据uid获取推荐结果,启用缓存,避免重复请求数据库
+     * 获取根据uid获取点播推荐结果,启用缓存,避免重复请求数据库
      * @param uid
      * @return
      * @throws IOException
      */
     @Cacheable(value = "resCache", key = "#uid.concat('-' + #type)")
-    public List<String> getResult(String uid,String type) throws IOException {
+    public String getDbResult(String uid,String type) throws IOException {
         HTable table = new HTable(TableName.valueOf(RESULT_TB_NAME),this.connection);
         Get get = new Get(Bytes.toBytes(uid));
         Result result = table.get(get);
@@ -121,7 +121,7 @@ public class HBaseDao {
             return getDefault(table,type);
         }
         table.close();
-        return Arrays.asList(resStr.split("~"));
+        return resStr;
     }
 
     /**
@@ -132,7 +132,7 @@ public class HBaseDao {
      * @throws IOException
      */
     @Cacheable(value = "resCache", key = "#uid.concat('-' + #type)")
-    public List<String> getFocus(String uid,String type) throws IOException {
+    public String getKdResult(String uid,String type) throws IOException {
         HTable table = new HTable(TableName.valueOf(FOCUS_TB_NAME),this.connection);
         Get get = new Get(Bytes.toBytes(uid));
         Result result = table.get(get);
@@ -142,7 +142,7 @@ public class HBaseDao {
             return getDefault(table,"rec");
         }
         table.close();
-        return Arrays.asList(resStr.split("~"));
+        return resStr;
     }
 
     /**
@@ -152,13 +152,13 @@ public class HBaseDao {
      * @return
      * @throws IOException
      */
-    private List<String> getDefault(HTable table, String column) throws IOException{
+    private String getDefault(HTable table, String column) throws IOException{
         Get get = new Get(Bytes.toBytes(DEFAULT_USER_ID));
         Result result = table.get(get);
         byte [] value = result.getValue(Bytes.toBytes("cf"), Bytes.toBytes(column));
         String resStr = Bytes.toString(value);
         table.close();
-        return Arrays.asList(resStr.split("~"));
+        return resStr;
     }
 
     /**
