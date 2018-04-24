@@ -1,3 +1,5 @@
+package com.iflytek.dao;
+
 import com.iflytek.ApplicationStart;
 import com.iflytek.dao.HBaseDao;
 import org.junit.Test;
@@ -20,7 +22,6 @@ public class HBaseDaoTest {
 
     @Test
     public void testGetAppKey() throws IOException{
-
         System.out.println("yes:"+hBaseDao.getAppKey("2017012515141731"));
     }
 
