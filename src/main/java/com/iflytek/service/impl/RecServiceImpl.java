@@ -6,6 +6,7 @@ import com.iflytek.entity.res.ResponseContent;
 import com.iflytek.entity.res.ResponseItem;
 import com.iflytek.exception.exceptionhandle.SecurityVerificationException;
 import com.iflytek.service.RecService;
+import com.iflytek.util.CollectionUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,15 +27,39 @@ public class RecServiceImpl implements RecService {
     private HBaseDao hBaseDao;
 
     @Override
-    public ResponseContent getAllRec(RecommendCommonParams reqParams) {
-        ResponseContent content = new ResponseContent();
+    public ResponseContent getAllRec(RecommendCommonParams reqParams) throws IOException {
+        int num = 100;
         List<ResponseItem> results = new ArrayList<>();
-        ResponseItem responseItem = new ResponseItem();
-        responseItem.setUid("");
-        responseItem.setResult_id("11111~222222~33333");
-        results.add(responseItem);
-        content.setResults(results);
-        return content;
+        String uids = reqParams.getContent().getUids();
+        log.debug("uuids:{}", uids);
+        int subListNums = num >> 1;
+        if (StringUtils.isNotEmpty(uids)) {
+            if (uids.contains(",")) {
+                for (String uuid : uids.split(",")) {
+                    //获取点播结果
+                    List<String> dbResult = Arrays.asList(hBaseDao.getDbResult(uuid, "rc")).subList(0, subListNums);
+                    //获取看点结果
+                    List<String> kdResult = Arrays.asList(hBaseDao.getKdResult(uuid, "rc")).subList(0, subListNums);
+                    //点播和看点结果
+                    List<String> mergeResult = CollectionUtil.mergeAndSwap(dbResult, kdResult);
+                    //将合并后的结果处理并存储
+                    results.add(new ResponseItem(uuid, handleListResultToStr(mergeResult)));
+                }
+            } else {
+                //获取点播结果
+                List<String> dbResult = Arrays.asList(hBaseDao.getDbResult(uids, "rc")).subList(0, subListNums);
+                //获取看点结果
+                List<String> kdResult = Arrays.asList(hBaseDao.getKdResult(uids, "rc")).subList(0, subListNums);
+                //点播和看点结果
+                List<String> mergeResult = CollectionUtil.mergeAndSwap(dbResult, kdResult);
+                //将合并后的结果处理并存储
+                results.add(new ResponseItem(uids, handleListResultToStr(mergeResult)));
+            }
+        } else {
+            log.error("the params of uids is required");
+            throw new SecurityVerificationException("the params of uids is required");
+        }
+        return new ResponseContent(results);
     }
 
     @Override
@@ -43,22 +68,23 @@ public class RecServiceImpl implements RecService {
     }
 
     @Override
-    public ResponseContent getDbRec(RecommendCommonParams reqParams) throws IOException{
+    public ResponseContent getDbRec(RecommendCommonParams reqParams) throws IOException {
         //点播结果处理业务结果
         List<ResponseItem> results = new ArrayList<>();
         String uids = reqParams.getContent().getUids();
-        log.debug("uuids:{}",uids);
-        if(StringUtils.isNotEmpty(uids)){
-            if(uids.contains(",")){
-                for(String uuid:uids.split(",")){
-                    String result = this.handResult(hBaseDao.getDbResult(uuid,"rc"),100);
-                    results.add(new ResponseItem(uuid,result));
+        log.debug("uuids:{}", uids);
+        if (StringUtils.isNotEmpty(uids)) {
+            if (uids.contains(",")) {
+                for (String uuid : uids.split(",")) {
+                    String result = this.handleResult(hBaseDao.getDbResult(uuid, "rc"), 100);
+                    results.add(new ResponseItem(uuid, result));
                 }
-            }else{
-                String result = this.handResult(hBaseDao.getKdResult(uids,"rc"),100);
-                results.add(new ResponseItem(uids,result));
+            } else {
+                String result = this.handleResult(hBaseDao.getKdResult(uids, "rc"), 100);
+                results.add(new ResponseItem(uids, result));
             }
-        }else {
+        } else {
+            log.error("the params of uids is required");
             throw new SecurityVerificationException("the params of uids is required");
         }
         return new ResponseContent(results);
@@ -69,18 +95,19 @@ public class RecServiceImpl implements RecService {
         //看点结果查询业务处理
         List<ResponseItem> results = new ArrayList<>();
         String uids = reqParams.getContent().getUids();
-        log.debug("uuids:{}",uids);
-        if(StringUtils.isNotEmpty(uids)){
-            if(uids.contains(",")){
-                for(String uuid:uids.split(",")){
-                    String result = this.handResult(hBaseDao.getKdResult(uuid,"rc"),100);
-                    results.add(new ResponseItem(uuid,result));
+        log.debug("uuids:{}", uids);
+        if (StringUtils.isNotEmpty(uids)) {
+            if (uids.contains(",")) {
+                for (String uuid : uids.split(",")) {
+                    String result = this.handleResult(hBaseDao.getKdResult(uuid, "rc"), 100);
+                    results.add(new ResponseItem(uuid, result));
                 }
-            }else{
-                String result = this.handResult(hBaseDao.getKdResult(uids,"rc"),100);
-                results.add(new ResponseItem(uids,result));
+            } else {
+                String result = this.handleResult(hBaseDao.getKdResult(uids, "rc"), 100);
+                results.add(new ResponseItem(uids, result));
             }
-        }else {
+        } else {
+            log.error("the params of uids is required");
             throw new SecurityVerificationException("the params of uids is required");
         }
         return new ResponseContent(results);
@@ -97,20 +124,32 @@ public class RecServiceImpl implements RecService {
     }
 
     /**
-     *  处理公共的结果
+     * 处理公共的结果
+     *
      * @param result 原始结果
-     * @param num 需要的条数
+     * @param num    需要的条数
      * @return
      */
-    private String handResult(String result,int num){
-        if(StringUtils.isNotEmpty(result)){
+    private String handleResult(String result, int num) {
+        if (StringUtils.isNotEmpty(result)) {
             List<String> results = Arrays.asList(result.split("~"));
-            return results.subList(0,num).stream().map(Object::toString)
+            return results.subList(0, num).stream().map(Object::toString)
                     .collect(Collectors.joining("~"));
-        }else {
+        } else {
             log.debug("can't find result from HBase");
             return "";
         }
 
+    }
+
+    /**
+     * 将
+     *
+     * @param result
+     * @return
+     */
+    private String handleListResultToStr(List<String> results) {
+        return results.stream().map(Object::toString)
+                .collect(Collectors.joining("~"));
     }
 }
