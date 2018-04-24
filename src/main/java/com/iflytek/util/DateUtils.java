@@ -16,9 +16,9 @@ public class DateUtils {
 
 
     /**
-     * 将毫秒时间格式化为指定格式的字符串时间
+     * 将date格式化为指定格式的字符串时间
      *
-     * @param millSec 毫秒
+     * @param date java.util.Date
      * @param format 需要格式的样式(yyyy-MM-dd等)
      * @return String
      */
