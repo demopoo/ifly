@@ -13,7 +13,7 @@ set APP_NAME=iflyrecommend.jar
 ::----------------------------------------------------------------------
 set JVM_OPTS=-server -Xms512m -Xmx512m
 
-set CONFIG= -Dlogging.path=../logs -Dlogging.config=../config/logback-boot.xml -Dspring.config.location=../config/application.yml
+set CONFIG= -Dlogging.path=../logs -Dlogging.config=../config/log4j2.xml -Dspring.config.location=../config/application.yml
 
 set DEBUG_OPTS=
 if ""%1"" == ""debug"" (

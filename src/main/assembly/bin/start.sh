@@ -14,7 +14,7 @@ cd ..
 DEPLOY_DIR=`pwd`
 CONF_DIR=$DEPLOY_DIR/config
 # log file
-LOG_IMPL_FILE=logback-boot.xml
+LOG_IMPL_FILE=log4j2.xml
 APPLICATION_FILE=application.yml
 
 # ======================FIND SERVER PORT==========================================
@@ -36,7 +36,7 @@ if [ "$1" = "status" ]; then
     if [ -n "$PIDS" ]; then
         echo "The $SERVER_NAME is running...!"
         echo "PID: $PIDS"
-        echo "Used port:$SERVER_PORT"
+        echo "Used port: $SERVER_PORT"
         exit 0
     else
         echo "The $SERVER_NAME is stopped"
@@ -47,7 +47,7 @@ fi
 if [ -n "$PIDS" ]; then
     echo "ERROR: The $SERVER_NAME already started!"
     echo "PID: $PIDS"
-    echo "Used port:$SERVER_PORT"
+    echo "Used port: $SERVER_PORT"
     exit 1
 fi
 
@@ -113,5 +113,5 @@ done
 echo "OK!"
 PIDS=`ps -f | grep java | grep "$DEPLOY_DIR" | awk '{print $2}'`
 echo "PID: $PIDS"
-echo "PORT:$SERVER_PORT"
+echo "PORT: $SERVER_PORT"
 echo "STDOUT: $STDOUT_FILE"
