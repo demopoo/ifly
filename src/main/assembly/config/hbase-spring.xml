@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:cache="http://www.springframework.org/schema/cache"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd">
+
+    <!-- 启用缓存注解支持 -->
+    <cache:annotation-driven/>
+
+    <!-- 加载HBase配置文件 -->
+    <context:property-placeholder location="classpath:hbase.properties"/>
+
+
+
+    <!-- 配置HBase数据库bean -->
+    <bean class="com.iflytek.dao.HBaseDao">
+        <constructor-arg name="master" type="java.lang.String" value="${hbase.master}"/>
+        <constructor-arg name="zkQuorum" type="java.lang.String" value="${zookeeper.quorum}"/>
+        <constructor-arg name="zkPort" type="java.lang.String" value="${zookeeper.port}"/>
+        <constructor-arg name="poolSize" type="java.lang.Integer" value="${pool.size}"/>
+    </bean>
+
+    <!-- 开启方法级别参数验证 -->
+    <!--<bean class="org.springframework.validation.beanvalidation.MethodValidationPostProcessor"/>-->
+
+</beans>

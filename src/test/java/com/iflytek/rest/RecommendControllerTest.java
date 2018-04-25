@@ -79,6 +79,7 @@ public class RecommendControllerTest extends ControllerBaseTest {
                 "    <secure_msg>jpghljcgaahhechpdigjlmhegkepebbbckdggmcjehfjppglmfefdloiooofpmpkdiniombjaglbokhjeekapnfhnkcgaihp</secure_msg> \n" +
                 "  </content> \n" +
                 "</operation_in>";
+        System.out.println(xml);
         return xml;
     }
 }

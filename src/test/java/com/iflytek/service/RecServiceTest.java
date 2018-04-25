@@ -5,7 +5,6 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.iflytek.entity.req.RecommendCommonParams;
 import com.iflytek.entity.req.RequestContent;
 import com.iflytek.entity.res.ResponseContent;
-import com.sun.javaws.jnl.XMLFormat;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 

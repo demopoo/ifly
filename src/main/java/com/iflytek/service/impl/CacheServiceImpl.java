@@ -24,13 +24,13 @@ import java.util.Map;
  * @author jjliu15@iflytek.com
  * @date 2018/1/22
  */
-@PropertySource(value = "config.properties")
+//@PropertySource(value = "config.properties")
 @Slf4j
 @Service
 public class CacheServiceImpl implements CacheService {
 
-    @Value("${application.quorum}")
-    private String quorum;
+//    @Value("${application.quorum}")
+    private String quorum ="172.31.4.64:54321/iflyrecommend";
     /**
      * 集群列表
      */
