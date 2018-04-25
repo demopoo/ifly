@@ -32,7 +32,7 @@ public class RecServiceImpl implements RecService {
 
     @Override
     public ResponseContent getAllRec(RecommendCommonParams reqParams) throws IOException {
-
+        long start = System.currentTimeMillis();
         List<ResponseItem> results = new ArrayList<>();
         String uids = reqParams.getContent().getUids();
         log.debug("uuids:{}", uids);
@@ -46,30 +46,33 @@ public class RecServiceImpl implements RecService {
                     List<String> dbResult = CollectionUtil.subList(CollectionUtil.asList(StringUtil.split(strDbResult, "~")), 0, subListNums);
 
                     //获取看点结果
-                    List<String> kdResult = CollectionUtil.subList(CollectionUtil.asList(StringUtil.split(strKdResult,"~")), 0, this.num-subListNums);
+                    List<String> kdResult = CollectionUtil.subList(CollectionUtil.asList(StringUtil.split(strKdResult, "~")), 0, this.num - subListNums);
 
                     //点播和看点结果
                     List<String> mergeResult = CollectionUtil.mergeAndSwap(dbResult, kdResult);
 
                     results.add(new ResponseItem(uuid, removeRepeatAndCastToStr(mergeResult)));
+
                 }
+
             } else {
                 String strDbResult = hBaseDao.getDbResult(uids, "rc");
-
                 //获取点播结果
                 List<String> dbResult = CollectionUtil.subList(CollectionUtil.asList(StringUtil.split(strDbResult, "~")), 0, subListNums);
                 //获取看点结果
                 String strKdResult = hBaseDao.getKdResult(uids, "rc");
-                List<String> kdResult = CollectionUtil.subList(CollectionUtil.asList(StringUtil.split(strKdResult, "~")), 0, this.num-subListNums);
+                List<String> kdResult = CollectionUtil.subList(CollectionUtil.asList(StringUtil.split(strKdResult, "~")), 0, this.num - subListNums);
                 //点播和看点结果
                 List<String> mergeResult = CollectionUtil.mergeAndSwap(dbResult, kdResult);
                 //将合并后的结果处理并存储
                 results.add(new ResponseItem(uids, removeRepeatAndCastToStr(mergeResult)));
+
             }
         } else {
             log.error("the params of uids is required");
             throw new SecurityVerificationException("the params of uids is required");
         }
+        log.debug("getAllRec costTime:{}", (System.currentTimeMillis() - start));
         return new ResponseContent(results);
     }
 
@@ -167,8 +170,8 @@ public class RecServiceImpl implements RecService {
     }
 
     /**
-     *
      * 将list转化成string
+     *
      * @param results
      * @return
      */

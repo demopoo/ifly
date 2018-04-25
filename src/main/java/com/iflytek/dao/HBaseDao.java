@@ -114,14 +114,16 @@ public class HBaseDao {
      */
     @Cacheable(value = "resCache", key = "#uid.concat('-' + #type)")
     public String getDbResult(String uid, String type) throws IOException {
+        long start = System.currentTimeMillis();
         HTable table = new HTable(TableName.valueOf(RESULT_TB_NAME), this.connection);
         Get get = new Get(Bytes.toBytes(uid));
         Result result = table.get(get);
         byte[] value = result.getValue(Bytes.toBytes("cf"), Bytes.toBytes(type));
         String resStr = Bytes.toString(value);
         if (resStr == null || resStr.length() < 1) {
-            return getDefault(table, type);
+            resStr = getDefault(table, type);
         }
+        log.debug("getDbResult costTime:{} ms",(System.currentTimeMillis() - start));
         table.close();
         return resStr;
     }
@@ -136,6 +138,7 @@ public class HBaseDao {
      */
     @Cacheable(value = "resCache", key = "#uid.concat('-' + #type)")
     public String getKdResult(String uid, String type) throws IOException {
+        long start = System.currentTimeMillis();
         HTable table = new HTable(TableName.valueOf(FOCUS_TB_NAME), this.connection);
         Get get = new Get(Bytes.toBytes(uid));
         Result result = table.get(get);
@@ -144,6 +147,7 @@ public class HBaseDao {
         if (resStr == null || resStr.length() < 1) {
             return getDefault(table, "rec");
         }
+        log.debug("getKbResult costTime:{} ms",(System.currentTimeMillis() - start));
         table.close();
         return resStr;
     }
