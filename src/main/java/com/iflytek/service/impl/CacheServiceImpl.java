@@ -24,7 +24,7 @@ import java.util.Map;
  * @author jjliu15@iflytek.com
  * @date 2018/1/22
  */
-@PropertySource(value = {"classpath:config.properties"})
+
 @Slf4j
 @Service
 public class CacheServiceImpl implements CacheService {

@@ -11,6 +11,8 @@ import com.iflytek.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -25,9 +27,12 @@ public class RecServiceImpl implements RecService {
     @Autowired
     private HBaseDao hBaseDao;
 
+    @Value("${application.limit}")
+    private int num;
+
     @Override
     public ResponseContent getAllRec(RecommendCommonParams reqParams) throws IOException {
-        int num = 20;
+
         List<ResponseItem> results = new ArrayList<>();
         String uids = reqParams.getContent().getUids();
         log.debug("uuids:{}", uids);
@@ -41,7 +46,7 @@ public class RecServiceImpl implements RecService {
                     List<String> dbResult = CollectionUtil.subList(CollectionUtil.asList(StringUtil.split(strDbResult, "~")), 0, subListNums);
 
                     //获取看点结果
-                    List<String> kdResult = CollectionUtil.subList(CollectionUtil.asList(StringUtil.split(strKdResult,"~")), 0, subListNums);
+                    List<String> kdResult = CollectionUtil.subList(CollectionUtil.asList(StringUtil.split(strKdResult,"~")), 0, this.num-subListNums);
 
                     //点播和看点结果
                     List<String> mergeResult = CollectionUtil.mergeAndSwap(dbResult, kdResult);
@@ -55,7 +60,7 @@ public class RecServiceImpl implements RecService {
                 List<String> dbResult = CollectionUtil.subList(CollectionUtil.asList(StringUtil.split(strDbResult, "~")), 0, subListNums);
                 //获取看点结果
                 String strKdResult = hBaseDao.getKdResult(uids, "rc");
-                List<String> kdResult = CollectionUtil.subList(CollectionUtil.asList(StringUtil.split(strKdResult, "~")), 0, subListNums);
+                List<String> kdResult = CollectionUtil.subList(CollectionUtil.asList(StringUtil.split(strKdResult, "~")), 0, this.num-subListNums);
                 //点播和看点结果
                 List<String> mergeResult = CollectionUtil.mergeAndSwap(dbResult, kdResult);
                 //将合并后的结果处理并存储
@@ -82,11 +87,11 @@ public class RecServiceImpl implements RecService {
         if (StringUtils.isNotEmpty(uids)) {
             if (uids.contains(",")) {
                 for (String uuid : uids.split(",")) {
-                    String result = this.handleResult(hBaseDao.getDbResult(uuid, "rc"), 100);
+                    String result = this.handleResult(hBaseDao.getDbResult(uuid, "rc"), this.num);
                     results.add(new ResponseItem(uuid, result));
                 }
             } else {
-                String result = this.handleResult(hBaseDao.getKdResult(uids, "rc"), 100);
+                String result = this.handleResult(hBaseDao.getKdResult(uids, "rc"), this.num);
                 results.add(new ResponseItem(uids, result));
             }
         } else {
@@ -105,11 +110,11 @@ public class RecServiceImpl implements RecService {
         if (StringUtils.isNotEmpty(uids)) {
             if (uids.contains(",")) {
                 for (String uuid : uids.split(",")) {
-                    String result = this.handleResult(hBaseDao.getKdResult(uuid, "rc"), 100);
+                    String result = this.handleResult(hBaseDao.getKdResult(uuid, "rc"), this.num);
                     results.add(new ResponseItem(uuid, result));
                 }
             } else {
-                String result = this.handleResult(hBaseDao.getKdResult(uids, "rc"), 100);
+                String result = this.handleResult(hBaseDao.getKdResult(uids, "rc"), this.num);
                 results.add(new ResponseItem(uids, result));
             }
         } else {
