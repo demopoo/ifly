@@ -13,12 +13,11 @@ import org.apache.hadoop.hbase.util.Bytes;
 import org.springframework.cache.annotation.Cacheable;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 import java.util.concurrent.Executors;
 
 /**
  * Hbase数据库连接层
+ *
  * @author jjliu15@iflytek.com
  * @date 2017/12/7
  */
@@ -29,23 +28,23 @@ public class HBaseDao {
     /**
      * 点播推荐结果表
      */
-    private static final String RESULT_TB_NAME      = "FJTv:DbRecommendResult";
+    private static final String RESULT_TB_NAME = "FJTv:DbRecommendResult";
     /**
      * 看点推荐结果表
      */
-    private static final String FOCUS_TB_NAME       = "FJTv:KdRecommendResult";
+    private static final String FOCUS_TB_NAME = "FJTv:KdRecommendResult";
     /**
      * 安全校验表
      */
-    private static final String SECURITY_TB_NAME    = "FJTv:SecurityCheck";
+    private static final String SECURITY_TB_NAME = "FJTv:SecurityCheck";
     /**
      * 用户点击行为表(暂时没用)
      */
-    private static final String CLICK_TB_NAME       = "FJTv:UserClick";
+    private static final String CLICK_TB_NAME = "FJTv:UserClick";
     /**
      * 默认用户ID
      */
-    private static final String DEFAULT_USER_ID     = "y_00000000000000";
+    private static final String DEFAULT_USER_ID = "y_00000000000000";
     /**
      * 用于管理Hbase的对象
      */
@@ -57,36 +56,38 @@ public class HBaseDao {
 
     /**
      * 通过Spring自动注入
+     *
      * @param zkQuorum
      * @param zkPort
      * @param poolSize
      */
-    private HBaseDao(String master, String zkQuorum, String zkPort, Integer poolSize){
-        init(master,zkQuorum,zkPort,poolSize);
+    private HBaseDao(String master, String zkQuorum, String zkPort, Integer poolSize) {
+        init(master, zkQuorum, zkPort, poolSize);
     }
 
     /**
      * 初始化连接
+     *
      * @param zkQuorum
      * @param zkPort
      * @param poolSize
      */
-    private void init(String master, String zkQuorum, String zkPort, int poolSize){
+    private void init(String master, String zkQuorum, String zkPort, int poolSize) {
         try {
             Configuration conf = HBaseConfiguration.create(new Configuration());
-            conf.set("hbase.zookeeper.quorum",zkQuorum);
-            conf.set("hbase.zookeeper.property.clientPort",zkPort);
-            conf.set("hbase.master",master);
+            conf.set("hbase.zookeeper.quorum", zkQuorum);
+            conf.set("hbase.zookeeper.property.clientPort", zkPort);
+            conf.set("hbase.master", master);
             this.connection = HConnectionManager.createConnection(conf, Executors.newFixedThreadPool(poolSize));
             this.admin = new HBaseAdmin(this.connection);
-            if (this.connection != null){
+            if (this.connection != null) {
                 log.info("HBase连接成功");
                 initTable();
-            }else {
+            } else {
                 log.info("HBase连接失败");
             }
         } catch (IOException e) {
-            log.error(e.getMessage(),e);
+            log.error(e.getMessage(), e);
             log.info("HBase连接异常");
         }
     }
@@ -94,8 +95,8 @@ public class HBaseDao {
     /**
      * 初始化表，纯HBASEAPI建表
      */
-    private void initTable() throws IOException{
-        if (!admin.tableExists(SECURITY_TB_NAME)){
+    private void initTable() throws IOException {
+        if (!admin.tableExists(SECURITY_TB_NAME)) {
             HTableDescriptor table = new HTableDescriptor(TableName.valueOf(SECURITY_TB_NAME));
             table.addFamily(new HColumnDescriptor("secure"));
             table.addFamily(new HColumnDescriptor("info"));
@@ -106,19 +107,20 @@ public class HBaseDao {
 
     /**
      * 获取根据uid获取点播推荐结果,启用缓存,避免重复请求数据库
+     *
      * @param uid
      * @return
      * @throws IOException
      */
     @Cacheable(value = "resCache", key = "#uid.concat('-' + #type)")
-    public String getDbResult(String uid,String type) throws IOException {
-        HTable table = new HTable(TableName.valueOf(RESULT_TB_NAME),this.connection);
+    public String getDbResult(String uid, String type) throws IOException {
+        HTable table = new HTable(TableName.valueOf(RESULT_TB_NAME), this.connection);
         Get get = new Get(Bytes.toBytes(uid));
         Result result = table.get(get);
-        byte [] value = result.getValue(Bytes.toBytes("cf"), Bytes.toBytes(type));
+        byte[] value = result.getValue(Bytes.toBytes("cf"), Bytes.toBytes(type));
         String resStr = Bytes.toString(value);
-        if (resStr == null || resStr.length() < 1){
-            return getDefault(table,type);
+        if (resStr == null || resStr.length() < 1) {
+            return getDefault(table, type);
         }
         table.close();
         return resStr;
@@ -126,20 +128,21 @@ public class HBaseDao {
 
     /**
      * 获取根据uid获取看点结果,启用缓存,避免重复请求数据库
+     *
      * @param uid
      * @param type
      * @return
      * @throws IOException
      */
     @Cacheable(value = "resCache", key = "#uid.concat('-' + #type)")
-    public String getKdResult(String uid,String type) throws IOException {
-        HTable table = new HTable(TableName.valueOf(FOCUS_TB_NAME),this.connection);
+    public String getKdResult(String uid, String type) throws IOException {
+        HTable table = new HTable(TableName.valueOf(FOCUS_TB_NAME), this.connection);
         Get get = new Get(Bytes.toBytes(uid));
         Result result = table.get(get);
-        byte [] value = result.getValue(Bytes.toBytes("cf"), Bytes.toBytes("rec"));
+        byte[] value = result.getValue(Bytes.toBytes("cf"), Bytes.toBytes("rec"));
         String resStr = Bytes.toString(value);
-        if (resStr == null || resStr.length() < 1){
-            return getDefault(table,"rec");
+        if (resStr == null || resStr.length() < 1) {
+            return getDefault(table, "rec");
         }
         table.close();
         return resStr;
@@ -147,15 +150,16 @@ public class HBaseDao {
 
     /**
      * 用户无数据时获取默认推荐
+     *
      * @param table
      * @param column
      * @return
      * @throws IOException
      */
-    private String getDefault(HTable table, String column) throws IOException{
+    private String getDefault(HTable table, String column) throws IOException {
         Get get = new Get(Bytes.toBytes(DEFAULT_USER_ID));
         Result result = table.get(get);
-        byte [] value = result.getValue(Bytes.toBytes("cf"), Bytes.toBytes(column));
+        byte[] value = result.getValue(Bytes.toBytes("cf"), Bytes.toBytes(column));
         String resStr = Bytes.toString(value);
         table.close();
         return resStr;
@@ -163,18 +167,19 @@ public class HBaseDao {
 
     /**
      * 根据appid获取appkey
+     *
      * @param appId
      * @return
      */
-    @Cacheable(value = "appKeyCache",key = "#appId")
-    public String getAppKey(String appId) throws IOException{
-        HTable table = new HTable(TableName.valueOf(SECURITY_TB_NAME),this.connection);
+    @Cacheable(value = "appKeyCache", key = "#appId")
+    public String getAppKey(String appId) throws IOException {
+        HTable table = new HTable(TableName.valueOf(SECURITY_TB_NAME), this.connection);
         Get get = new Get(Bytes.toBytes(appId));
         Result result = table.get(get);
-        byte [] value = result.getValue(Bytes.toBytes("secure"), Bytes.toBytes("appkey"));
+        byte[] value = result.getValue(Bytes.toBytes("secure"), Bytes.toBytes("appkey"));
         table.close();
         String resStr = Bytes.toString(value);
-        if (resStr == null){
+        if (resStr == null) {
             throw new SecurityVerificationException("appkey不存在");
         }
         return resStr;

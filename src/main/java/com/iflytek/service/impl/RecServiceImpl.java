@@ -7,15 +7,14 @@ import com.iflytek.entity.res.ResponseItem;
 import com.iflytek.exception.exceptionhandle.SecurityVerificationException;
 import com.iflytek.service.RecService;
 import com.iflytek.util.CollectionUtil;
+import com.iflytek.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -28,7 +27,7 @@ public class RecServiceImpl implements RecService {
 
     @Override
     public ResponseContent getAllRec(RecommendCommonParams reqParams) throws IOException {
-        int num = 100;
+        int num = 20;
         List<ResponseItem> results = new ArrayList<>();
         String uids = reqParams.getContent().getUids();
         log.debug("uuids:{}", uids);
@@ -36,24 +35,31 @@ public class RecServiceImpl implements RecService {
         if (StringUtils.isNotEmpty(uids)) {
             if (uids.contains(",")) {
                 for (String uuid : uids.split(",")) {
+                    String strDbResult = hBaseDao.getDbResult(uuid, "rc");
                     //获取点播结果
-                    List<String> dbResult = Arrays.asList(hBaseDao.getDbResult(uuid, "rc")).subList(0, subListNums);
+                    String strKdResult = hBaseDao.getKdResult(uuid, "rc");
+                    List<String> dbResult = CollectionUtil.subList(CollectionUtil.asList(StringUtil.split(strDbResult, "~")), 0, subListNums);
+
                     //获取看点结果
-                    List<String> kdResult = Arrays.asList(hBaseDao.getKdResult(uuid, "rc")).subList(0, subListNums);
+                    List<String> kdResult = CollectionUtil.subList(CollectionUtil.asList(StringUtil.split(strKdResult,"~")), 0, subListNums);
+
                     //点播和看点结果
                     List<String> mergeResult = CollectionUtil.mergeAndSwap(dbResult, kdResult);
-                    //将合并后的结果处理并存储
-                    results.add(new ResponseItem(uuid, handleListResultToStr(mergeResult)));
+
+                    results.add(new ResponseItem(uuid, removeRepeatAndCastToStr(mergeResult)));
                 }
             } else {
+                String strDbResult = hBaseDao.getDbResult(uids, "rc");
+
                 //获取点播结果
-                List<String> dbResult = Arrays.asList(hBaseDao.getDbResult(uids, "rc")).subList(0, subListNums);
+                List<String> dbResult = CollectionUtil.subList(CollectionUtil.asList(StringUtil.split(strDbResult, "~")), 0, subListNums);
                 //获取看点结果
-                List<String> kdResult = Arrays.asList(hBaseDao.getKdResult(uids, "rc")).subList(0, subListNums);
+                String strKdResult = hBaseDao.getKdResult(uids, "rc");
+                List<String> kdResult = CollectionUtil.subList(CollectionUtil.asList(StringUtil.split(strKdResult, "~")), 0, subListNums);
                 //点播和看点结果
                 List<String> mergeResult = CollectionUtil.mergeAndSwap(dbResult, kdResult);
                 //将合并后的结果处理并存储
-                results.add(new ResponseItem(uids, handleListResultToStr(mergeResult)));
+                results.add(new ResponseItem(uids, removeRepeatAndCastToStr(mergeResult)));
             }
         } else {
             log.error("the params of uids is required");
@@ -143,13 +149,26 @@ public class RecServiceImpl implements RecService {
     }
 
     /**
-     * 将
+     * 处理重复结果并且将其转成string
      *
-     * @param result
+     * @param results
+     * @return
+     */
+    private String removeRepeatAndCastToStr(List<String> results) {
+        Set<String> set = new TreeSet<>();
+        set.addAll(results);
+        //使用jdk1.8 lambda
+        return set.stream().map(i -> i.toString()).collect(Collectors.joining("~"));
+    }
+
+    /**
+     *
+     * 将list转化成string
+     * @param results
      * @return
      */
     private String handleListResultToStr(List<String> results) {
-        return results.stream().map(Object::toString)
+        return results.stream().map(i -> i.toString())
                 .collect(Collectors.joining("~"));
     }
 }

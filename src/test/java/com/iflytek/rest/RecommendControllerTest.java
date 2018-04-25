@@ -44,6 +44,10 @@ public class RecommendControllerTest extends ControllerBaseTest {
         System.out.println("result:"+result.getResponse().getContentAsString());
     }
 
+    /**
+     * 测试播放相关推荐接口
+     * @throws Exception
+     */
     @Test
     public void testRecVodRelate() throws Exception{
         MvcResult result = mockMvc.perform(post("/iflytek/api/suggestion/rec_vod_relate")

@@ -30,7 +30,7 @@ public class RecServiceTest extends ServiceBaseTest {
 
         params.setContent(reqContent);
 
-        ResponseContent content = recService.getDbRec(params);
+        ResponseContent content = recService.getAllRec(params);
 
         XmlMapper mapper = new XmlMapper();
         System.out.println(mapper.writeValueAsString(content));

@@ -1,9 +1,6 @@
 package com.iflytek.util;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * ClassName: CollectionUtil <br/>
@@ -44,6 +41,40 @@ public class CollectionUtil {
             return true;
         } else {
             return false;
+        }
+    }
+
+    /**
+     * 该sublist增加了下标检测，避免报错
+     * @param source List
+     * @param from from index
+     * @param to to index
+     * @param <T>
+     * @return
+     */
+    public static <T> List<T> subList(List<T> source, int from, int to) {
+        if (CollectionUtil.isEmpty(source)) {
+            return null;
+        }
+        int size = source.size();
+        if (to > size) {
+            return source.subList(from,size);
+        }else {
+            return source.subList(from,to);
+        }
+    }
+
+    /**
+     *
+     * @param a
+     * @param <T>
+     * @return
+     */
+    public static <T> List<T> asList(T ...a){
+        if(null !=a){
+            return Arrays.asList(a);
+        }else{
+            return new ArrayList<>(0);
         }
     }
 

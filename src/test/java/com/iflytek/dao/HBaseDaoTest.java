@@ -28,7 +28,7 @@ public class HBaseDaoTest {
 
     @Test
     public void testGetFocus() throws IOException {
-        String  result = hBaseDao.getDbResult("y_00000000000000","rec");
+        String  result = hBaseDao.getDbResult("22","rec");
         System.out.println(result);
     }
 
