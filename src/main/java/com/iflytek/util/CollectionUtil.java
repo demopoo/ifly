@@ -46,9 +46,10 @@ public class CollectionUtil {
 
     /**
      * 该sublist增加了下标检测，避免报错
+     *
      * @param source List
-     * @param from from index
-     * @param to to index
+     * @param from   from index
+     * @param to     to index
      * @param <T>
      * @return
      */
@@ -58,22 +59,23 @@ public class CollectionUtil {
         }
         int size = source.size();
         if (to > size) {
-            return source.subList(from,size);
-        }else {
-            return source.subList(from,to);
+            return source.subList(from, size);
+        } else {
+            return source.subList(from, to);
         }
     }
 
     /**
+     * 将数组转换为List,如果数组为空则返回一个空list
      *
      * @param a
      * @param <T>
      * @return
      */
-    public static <T> List<T> asList(T ...a){
-        if(null !=a){
+    public static <T> List<T> asList(T... a) {
+        if (null != a) {
             return Arrays.asList(a);
-        }else{
+        } else {
             return new ArrayList<>(0);
         }
     }
@@ -106,6 +108,7 @@ public class CollectionUtil {
         int a = result1.size();
         int b = result2.size();
         int size = a + b;
+        //两个list的值交叉合并算法(暂时未经过测试)
         List<T> finalResult = new ArrayList<>(size);
         if (a >= b) {
             for (int i = 0; i < size; i++) {

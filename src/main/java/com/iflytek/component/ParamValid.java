@@ -38,13 +38,13 @@ public class ParamValid {
      * @throws SecurityException
      */
     public void validArgs(@Valid RequestContent content) throws IOException {
-        String appId = content.getApp_id();
 
+        String appId = content.getApp_id();
+        //aes的秘钥
         String appKey = "demopoosecurityk";//HBase.getAppKey(appid);
         //appid+request_time
         String src = appId.concat(content.getRequest_time());
         String tar = encrypt(src,appKey);
-        System.out.println("sign:"+tar);
         if (!tar.equals(content.getSecure_msg())){
             throw new SecurityVerificationException("SECURITY CHECK FAILED");
         }

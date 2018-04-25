@@ -61,7 +61,7 @@ public class HBaseDao {
      * @param zkPort
      * @param poolSize
      */
-    private HBaseDao(String master, String zkQuorum, String zkPort, Integer poolSize) {
+    public HBaseDao(String master, String zkQuorum, String zkPort, Integer poolSize) {
         init(master, zkQuorum, zkPort, poolSize);
     }
 
