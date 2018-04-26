@@ -16,6 +16,7 @@ import java.io.IOException;
 
 /**
  * 参数验证组件,使用方法级参数验证
+ *
  * @author jjliu15@iflytek.com
  * @date 2018/1/23
  */
@@ -34,6 +35,7 @@ public class ParamValid {
 
     /**
      * 校验安全参数
+     *
      * @param content
      * @throws SecurityException
      */
@@ -41,11 +43,11 @@ public class ParamValid {
 
         String appId = content.getApp_id();
         //aes的秘钥
-        String appKey = "demopoosecurityk";//HBase.getAppKey(appid);
+        String appKey = "iflyrecomment453";//HBase.getAppKey(appid);
         //appid+request_time
         String src = appId.concat(content.getRequest_time());
-        String tar = encrypt(src,appKey);
-        if (!tar.equals(content.getSecure_msg())){
+        String tar = encrypt(src, appKey);
+        if (!tar.equals(content.getSecure_msg())) {
             throw new SecurityVerificationException("SECURITY CHECK FAILED");
         }
     }
@@ -53,20 +55,21 @@ public class ParamValid {
     /**
      * 加密方法
      * 使用AES-128-CBC加密模式，key需要为16位
+     *
      * @param sSrc
      * @param key
      * @return
      */
-    private String encrypt(String sSrc, String key){
-        try{
+    private String encrypt(String sSrc, String key) {
+        try {
             byte[] raw = key.getBytes();
-            SecretKeySpec skeySpec = new SecretKeySpec( raw, "AES" );
+            SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
             Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-            IvParameterSpec iv = new IvParameterSpec( IVSTR.getBytes() );
-            cipher.init( Cipher.ENCRYPT_MODE, skeySpec, iv );
-            byte[] encrypted = cipher.doFinal( sSrc.getBytes() );
-            return encodeBytes( encrypted );
-        }catch(Exception ex){
+            IvParameterSpec iv = new IvParameterSpec(IVSTR.getBytes());
+            cipher.init(Cipher.ENCRYPT_MODE, skeySpec, iv);
+            byte[] encrypted = cipher.doFinal(sSrc.getBytes());
+            return encodeBytes(encrypted);
+        } catch (Exception ex) {
             return null;
         }
 
