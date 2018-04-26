@@ -4,7 +4,7 @@ import com.iflytek.dao.HBaseDao;
 import com.iflytek.entity.req.RecommendCommonParams;
 import com.iflytek.entity.res.ResponseContent;
 import com.iflytek.entity.res.ResponseItem;
-import com.iflytek.exception.exceptionhandle.SecurityVerificationException;
+import com.iflytek.exception.SecurityVerificationException;
 import com.iflytek.service.RecService;
 import com.iflytek.util.CollectionUtil;
 import com.iflytek.util.StringUtil;
@@ -12,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;

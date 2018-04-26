@@ -3,7 +3,7 @@ package com.iflytek.component;
 import com.iflytek.entity.MockResult;
 import com.iflytek.entity.req.RecommendCommonParams;
 import com.iflytek.entity.res.RecommendCommonResult;
-import com.iflytek.exception.exceptionhandle.SecurityVerificationException;
+import com.iflytek.exception.SecurityVerificationException;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -50,7 +50,7 @@ public class ExceptionInterceptor {
         } catch (IOException e){
             log.error("Hbase异常",e);
             result = MockResult.returnErrorResult(params,"SERVER ERROR","9003");
-        } catch (Throwable e){
+        } catch(Throwable e){
             log.error("未知错误",e);
             result = MockResult.returnErrorResult(params,"UNKNOWN ERROR","9999");
         }

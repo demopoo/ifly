@@ -1,6 +1,6 @@
 package com.iflytek.dao;
 
-import com.iflytek.exception.exceptionhandle.SecurityVerificationException;
+import com.iflytek.exception.SecurityVerificationException;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hadoop.conf.Configuration;

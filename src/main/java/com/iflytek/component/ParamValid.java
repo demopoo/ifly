@@ -2,7 +2,8 @@ package com.iflytek.component;
 
 import com.iflytek.dao.HBaseDao;
 import com.iflytek.entity.req.RequestContent;
-import com.iflytek.exception.exceptionhandle.SecurityVerificationException;
+import com.iflytek.exception.SecurityVerificationException;
+import com.iflytek.exception.RateLimiterException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -39,17 +40,18 @@ public class ParamValid {
      * @param content
      * @throws SecurityException
      */
-    public void validArgs(@Valid RequestContent content) throws IOException {
+    public void validArgs(@Valid RequestContent content) {
 
         String appId = content.getApp_id();
         //aes的秘钥
         String appKey = "iflyrecomment453";//HBase.getAppKey(appid);
-        //appid+request_time
+        //appId+ request_time
         String src = appId.concat(content.getRequest_time());
         String tar = encrypt(src, appKey);
         if (!tar.equals(content.getSecure_msg())) {
             throw new SecurityVerificationException("SECURITY CHECK FAILED");
         }
+
     }
 
     /**
@@ -63,10 +65,10 @@ public class ParamValid {
     private String encrypt(String sSrc, String key) {
         try {
             byte[] raw = key.getBytes();
-            SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
+            SecretKeySpec keySpec = new SecretKeySpec(raw, "AES");
             Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
             IvParameterSpec iv = new IvParameterSpec(IVSTR.getBytes());
-            cipher.init(Cipher.ENCRYPT_MODE, skeySpec, iv);
+            cipher.init(Cipher.ENCRYPT_MODE, keySpec, iv);
             byte[] encrypted = cipher.doFinal(sSrc.getBytes());
             return encodeBytes(encrypted);
         } catch (Exception ex) {
