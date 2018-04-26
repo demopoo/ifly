@@ -90,13 +90,17 @@ data:
 ```
 配置参数说明
 
-配置参数 | 参数说明
----|---
-master | HBase主节点
-zkQuorum | ZooKeeper集群地址
-zkPort | ZooKeeper的端口号
-poolSize|hbase客服端线程池大小
-
+| 配置参数     | 参数说明          |
+| -------- | ------------- |
+| master   | HBase主节点      |
+| zkQuorum | ZooKeeper集群地址 |
+| zkPort   | ZooKeeper的端口号 |
+| poolSize | hbase客服端线程池大小 |
+## 查询条数限制
+目前每次查询的条数是可以自由控制的，默认配置是100条，如果需要调整，则到config/config.properties修改。
+```
+application.limit=100
+```
 
 
 
@@ -125,7 +129,7 @@ curl -X POST -H 'Content-Type: text/xml' -i http://192.168.248.1:9088/iflytek/ap
     <uids>y_00000000000000,222,333</uids>  
     <request_time>20170125152411001</request_time>  
     <app_id>yishiteng20170125</app_id>  
-    <secure_msg>jpghljcgaahhechpdigjlmhegkepebbbckdggmcjehfjppglmfefdloiooofpmpkdiniombjaglbokhjeekapnfhnkcgaihp</secure_msg> 
+    <secure_msg>fejlbbfnpbnnmngfjknehckkjnlkadomfpfkfgnflebhkjeecpbebognpbamffhddbohaiddcimcilbdkpmhildbjbcdpjob</secure_msg> 
   </content> 
 </operation_in>
 '
@@ -152,7 +156,7 @@ curl -X POST -H 'Content-Type: text/xml' -i http://192.168.248.1:9088/iflytek/ap
     <uids>y_00000000000000,222,333</uids>  
     <request_time>20170125152411001</request_time>  
     <app_id>yishiteng20170125</app_id>  
-    <secure_msg>jpghljcgaahhechpdigjlmhegkepebbbckdggmcjehfjppglmfefdloiooofpmpkdiniombjaglbokhjeekapnfhnkcgaihp</secure_msg> 
+    <secure_msg>fejlbbfnpbnnmngfjknehckkjnlkadomfpfkfgnflebhkjeecpbebognpbamffhddbohaiddcimcilbdkpmhildbjbcdpjob</secure_msg> 
   </content> 
 </operation_in>
 '
@@ -179,7 +183,7 @@ curl -X POST -H 'Content-Type: text/xml' -i http://192.168.248.1:9088/iflytek/ap
     <uids>y_00000000000000,222,333</uids>  
     <request_time>20170125152411001</request_time>  
     <app_id>yishiteng20170125</app_id>  
-    <secure_msg>jpghljcgaahhechpdigjlmhegkepebbbckdggmcjehfjppglmfefdloiooofpmpkdiniombjaglbokhjeekapnfhnkcgaihp</secure_msg> 
+    <secure_msg>fejlbbfnpbnnmngfjknehckkjnlkadomfpfkfgnflebhkjeecpbebognpbamffhddbohaiddcimcilbdkpmhildbjbcdpjob</secure_msg> 
   </content> 
 </operation_in>
 '
