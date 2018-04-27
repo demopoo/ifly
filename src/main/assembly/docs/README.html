@@ -317,9 +317,9 @@ header, .context-menu, .megamenu-content, footer { font-family: "Segoe UI", Aria
 </style>
 </head>
 <body class='typora-export' >
-<div  id='write'  class = 'is-node'><p>项目说明</p><h1><a name='header-n116' class='md-header-anchor '></a>项目部署</h1><p>打包后的项目部署比较简单，开箱即可启动</p><pre class='md-fences mock-cm' style='display:block;position:relative'>//解压tar.gz包
+<div  id='write'  class = 'is-node'><p>项目说明</p><h1><a name='header-n2' class='md-header-anchor '></a>项目部署</h1><p>打包后的项目部署比较简单，开箱即可启动</p><pre class='md-fences mock-cm' style='display:block;position:relative'>//解压tar.gz包
 tar -zxvf iflyrecommend-1.0.tar.gz
-//解压后启动脚本在项目的bin目录中，项目配置文件在config中，日志文件在logs目录中</pre><h1><a name='header-n121' class='md-header-anchor '></a>启动应用</h1><p>第一种通过start.sh来启动</p><pre class='md-fences mock-cm' style='display:block;position:relative'># 启动应用
+//解压后启动脚本在项目的bin目录中，项目配置文件在config中，日志文件在logs目录中</pre><h1><a name='header-n7' class='md-header-anchor '></a>启动应用</h1><p>第一种通过start.sh来启动</p><pre class='md-fences mock-cm' style='display:block;position:relative'># 启动应用
 
 ./start.sh
 
@@ -342,20 +342,23 @@ tar -zxvf iflyrecommend-1.0.tar.gz
 ./server.sh jmx
 # 获取当前的运行状态
 ./server.sh status
-</pre><h1><a name='header-n128' class='md-header-anchor '></a>停止应用</h1><pre class='md-fences mock-cm' style='display:block;position:relative'>./stop.sh
+</pre><h1><a name='header-n14' class='md-header-anchor '></a>停止应用</h1><pre class='md-fences mock-cm' style='display:block;position:relative'>./stop.sh
 或
-./server.sh stop</pre><h1><a name='header-n130' class='md-header-anchor '></a>启动日志</h1><p>启动日志在应用的logs下</p><h2><a name='header-n132' class='md-header-anchor '></a>日志调整</h2><p>目前默认开启的日志是debug，对于生产环境需要将日志关闭，修改日志只需要在config中的logback-boot.xml修改日志级别即可</p><pre class='md-fences mock-cm' style='display:block;position:relative'>  &lt;!-- 级别依次为【从高到低】：FATAL &gt; ERROR &gt; WARN &gt; INFO &gt; DEBUG &gt; TRACE  --&gt;
+./server.sh stop</pre><h1><a name='header-n16' class='md-header-anchor '></a>启动日志</h1><p>启动日志在应用的logs下</p><h2><a name='header-n18' class='md-header-anchor '></a>日志调整</h2><p>目前默认开启的日志是debug，对于生产环境需要将日志关闭，修改日志只需要在config中的logback-boot.xml修改日志级别即可</p><pre class='md-fences mock-cm' style='display:block;position:relative'>  &lt;!-- 级别依次为【从高到低】：FATAL &gt; ERROR &gt; WARN &gt; INFO &gt; DEBUG &gt; TRACE  --&gt;
 &lt;logger name=&quot;com.iflytek&quot; level=&quot;DEBUG&quot;&gt;
     &lt;appender-ref ref=&quot;syslog&quot; /&gt;
-&lt;/logger&gt;</pre><h1><a name='header-n138' class='md-header-anchor '></a>jvm参数调整</h1><p>服务启动的jvm参数设置目前是在start.sh中，默认设置的参数较小，
-  实际环境下需要自己修改jvm参数。只需要找到在start.sh中找到JAVA_MEM_OPTS修改参数即可</p><h1><a name='header-n142' class='md-header-anchor '></a>配置修改</h1><p>注意在修改yml文件中的配置时请严格按照原来的格式修改，字符缩进错误可能会影响，应用的启动</p><h2><a name='header-n144' class='md-header-anchor '></a>应用端口号修改</h2><p>端口号在config/application.yml</p><pre class='md-fences mock-cm' style='display:block;position:relative'>server:
-  port: 9088</pre><h2><a name='header-n149' class='md-header-anchor '></a>hbase配置修改</h2><p>hbase的配置在config/application.yml中</p><pre class='md-fences mock-cm' style='display:block;position:relative'>data:
+&lt;/logger&gt;</pre><h1><a name='header-n24' class='md-header-anchor '></a>jvm参数调整</h1><p>服务启动的jvm参数设置目前是在start.sh中，默认设置的参数较小，
+  实际环境下需要自己修改jvm参数。只需要找到在start.sh中找到JAVA_MEM_OPTS修改参数即可</p><h1><a name='header-n28' class='md-header-anchor '></a>配置修改</h1><p>注意在修改yml文件中的配置时请严格按照原来的格式修改，字符缩进错误可能会影响，应用的启动</p><h2><a name='header-n30' class='md-header-anchor '></a>应用端口号修改</h2><p>端口号在config/application.yml</p><pre class='md-fences mock-cm' style='display:block;position:relative'>server:
+  port: 9088</pre><h2><a name='header-n35' class='md-header-anchor '></a>hbase配置修改</h2><p>hbase的配置在config/application.yml中</p><pre class='md-fences mock-cm' style='display:block;position:relative'>data:
     hbase:
       master: 192.168.45.154:16000
       zkQuorum: 192.168.45.150,192.168.45.151,192.168.45.152
       poolSize: 100
       zkPort: 2181
-</pre><p>配置参数说明</p><table><thead><tr><th>配置参数</th><th>参数说明</th></tr></thead><tbody><tr><td>master</td><td>HBase主节点</td></tr><tr><td>zkQuorum</td><td>ZooKeeper集群地址</td></tr><tr><td>zkPort</td><td>ZooKeeper的端口号</td></tr><tr><td>poolSize</td><td>hbase客服端线程池大小</td></tr></tbody></table><h2><a name='header-n171' class='md-header-anchor '></a>查询条数限制</h2><p>目前每次查询的条数是可以自由控制的，默认配置是100条，如果需要调整，则到config/config.properties修改。</p><pre class='md-fences mock-cm' style='display:block;position:relative'>application.limit=100</pre><p></p><h1><a name='header-n177' class='md-header-anchor '></a>接口测试</h1><h2><a name='header-n178' class='md-header-anchor '></a>OTT推荐</h2><p>测试实例：</p><pre class='md-fences mock-cm' style='display:block;position:relative'>curl -X POST -H &#39;Content-Type: text/xml&#39; -i http://192.168.248.1:9088/iflytek/api/suggestion/rec_ott --data &#39;&lt;?xml version=&quot;1.0&quot; encoding=&quot;GBK&quot;?&gt;
+</pre><p>配置参数说明</p><table><thead><tr><th>配置参数</th><th>参数说明</th></tr></thead><tbody><tr><td>master</td><td>HBase主节点</td></tr><tr><td>zkQuorum</td><td>ZooKeeper集群地址</td></tr><tr><td>zkPort</td><td>ZooKeeper的端口号</td></tr><tr><td>poolSize</td><td>hbase客服端线程池大小</td></tr></tbody></table><h2><a name='header-n57' class='md-header-anchor '></a>查询条数限制</h2><p>目前每次查询的条数是可以自由控制的，默认配置是100条，如果需要调整，则到config/config.properties修改。</p><pre class='md-fences mock-cm' style='display:block;position:relative'>application.limit=100</pre><h1><a name='header-n61' class='md-header-anchor '></a>应用限流配置</h1><p>tps限流配置在config/config.properties中</p><pre class='md-fences mock-cm' style='display:block;position:relative'># 接口限流的tps数
+application.tps=100
+# 超过tps是否丢弃。false则阻塞处理超流请求
+application.drop=true</pre><h1><a name='header-n66' class='md-header-anchor '></a>接口测试</h1><h2><a name='header-n67' class='md-header-anchor '></a>OTT推荐</h2><p>测试实例：</p><pre class='md-fences mock-cm' style='display:block;position:relative'>curl -X POST -H &#39;Content-Type: text/xml&#39; -i http://192.168.248.1:9088/iflytek/api/suggestion/rec_ott --data &#39;&lt;?xml version=&quot;1.0&quot; encoding=&quot;GBK&quot;?&gt;
 
 &lt;operation_in&gt;
   &lt;verify_code&gt;210094032167747711503958&lt;/verify_code&gt;
@@ -376,7 +379,7 @@ tar -zxvf iflyrecommend-1.0.tar.gz
     &lt;secure_msg&gt;fejlbbfnpbnnmngfjknehckkjnlkadomfpfkfgnflebhkjeecpbebognpbamffhddbohaiddcimcilbdkpmhildbjbcdpjob&lt;/secure_msg&gt;
   &lt;/content&gt;
 &lt;/operation_in&gt;
-&#39;</pre><h2><a name='header-n182' class='md-header-anchor '></a>播放结束推荐接口</h2><p>测试实例：</p><pre class='md-fences mock-cm' style='display:block;position:relative'>curl -X POST -H &#39;Content-Type: text/xml&#39; -i http://192.168.248.1:9088/iflytek/api/suggestion/rec_vod_end --data &#39;&lt;?xml version=&quot;1.0&quot; encoding=&quot;GBK&quot;?&gt;
+&#39;</pre><h2><a name='header-n71' class='md-header-anchor '></a>播放结束推荐接口</h2><p>测试实例：</p><pre class='md-fences mock-cm' style='display:block;position:relative'>curl -X POST -H &#39;Content-Type: text/xml&#39; -i http://192.168.248.1:9088/iflytek/api/suggestion/rec_vod_end --data &#39;&lt;?xml version=&quot;1.0&quot; encoding=&quot;GBK&quot;?&gt;
 
 &lt;operation_in&gt;
   &lt;verify_code&gt;210094032167747711503958&lt;/verify_code&gt;
@@ -397,7 +400,7 @@ tar -zxvf iflyrecommend-1.0.tar.gz
     &lt;secure_msg&gt;fejlbbfnpbnnmngfjknehckkjnlkadomfpfkfgnflebhkjeecpbebognpbamffhddbohaiddcimcilbdkpmhildbjbcdpjob&lt;/secure_msg&gt;
   &lt;/content&gt;
 &lt;/operation_in&gt;
-&#39;</pre><h2><a name='header-n186' class='md-header-anchor '></a>详情页关联推荐</h2><p>测试实例：</p><pre class='md-fences mock-cm' style='display:block;position:relative'>curl -X POST -H &#39;Content-Type: text/xml&#39; -i http://192.168.248.1:9088/iflytek/api/suggestion/rec_vod_relate --data &#39;&lt;?xml version=&quot;1.0&quot; encoding=&quot;GBK&quot;?&gt;
+&#39;</pre><h2><a name='header-n75' class='md-header-anchor '></a>详情页关联推荐</h2><p>测试实例：</p><pre class='md-fences mock-cm' style='display:block;position:relative'>curl -X POST -H &#39;Content-Type: text/xml&#39; -i http://192.168.248.1:9088/iflytek/api/suggestion/rec_vod_relate --data &#39;&lt;?xml version=&quot;1.0&quot; encoding=&quot;GBK&quot;?&gt;
 
 &lt;operation_in&gt;
   &lt;verify_code&gt;210094032167747711503958&lt;/verify_code&gt;

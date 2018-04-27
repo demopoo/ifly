@@ -101,7 +101,15 @@ data:
 ```
 application.limit=100
 ```
+# 应用限流配置
 
+tps限流配置在config/config.properties中
+```
+# 接口限流的tps数
+application.tps=100
+# 超过tps是否丢弃。false则阻塞处理超流请求
+application.drop=true
+```
 
 
 # 接口测试
