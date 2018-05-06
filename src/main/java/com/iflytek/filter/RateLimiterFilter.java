@@ -42,10 +42,15 @@ public class RateLimiterFilter implements Filter {
      */
     private boolean isDrop;
 
+    /**
+     * tps
+     */
+    private Double tps;
+
     @Override
     public void init(FilterConfig filterConfig) {
         //获取tps限流量,如果配置错误将配设置成100
-        Double tps = NumberUtils.toDouble(filterConfig.getInitParameter(TPS), 100);
+        tps = NumberUtils.toDouble(filterConfig.getInitParameter(TPS), 100);
         isDrop = Boolean.valueOf(filterConfig.getInitParameter(IS_DROP));
         limiter = RateLimiter.create(tps); //100 request per second
     }
@@ -66,7 +71,8 @@ public class RateLimiterFilter implements Filter {
                 HttpServletRequest req = (HttpServletRequest) request;
                 HttpServletResponse res = (HttpServletResponse) response;
 
-                log.error("TOO MANY REQUESTS");
+
+                log.error("TOO MANY REQUESTS,current tps set is {}",tps);
 
                 String xml = this.getStream(req);
                 XmlMapper mapper = new XmlMapper();
