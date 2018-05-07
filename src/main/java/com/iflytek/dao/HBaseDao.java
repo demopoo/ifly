@@ -4,15 +4,15 @@ import com.iflytek.exception.SecurityVerificationException;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.hbase.HBaseConfiguration;
-import org.apache.hadoop.hbase.HColumnDescriptor;
-import org.apache.hadoop.hbase.HTableDescriptor;
-import org.apache.hadoop.hbase.TableName;
+import org.apache.hadoop.hbase.*;
 import org.apache.hadoop.hbase.client.*;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.springframework.cache.annotation.Cacheable;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executors;
 
 /**
@@ -128,6 +128,31 @@ public class HBaseDao {
         return resStr;
     }
 
+    public Map<String,String> batchGetDbResult(List<String> uids,String type) throws IOException {
+//        List<String> uids = new ArrayList<>();
+//        uids.add(DEFAULT_USER_ID);
+//        uids.add("aa");
+        List<Get> getList = new ArrayList();
+        HTable table = new HTable(TableName.valueOf(RESULT_TB_NAME), this.connection);
+        for (String uid : uids){
+            Get get = new Get(Bytes.toBytes(uid));
+            getList.add(get);
+        }
+
+        Result[] results = table.get(getList);
+        for (Result result : results){
+            String rowKey = Bytes.toString(result.getRow());
+            System.out.println("rowKey:"+rowKey);
+            byte[] value = result.getValue(Bytes.toBytes("cf"), Bytes.toBytes(type));
+            String resStr = Bytes.toString(value);
+            System.out.println(resStr);
+//            if (resStr == null || resStr.length() < 1) {
+//                resStr = getDefault(table, type);
+//            }
+        }
+        return null;
+    }
+
     /**
      * 获取根据uid获取看点结果,启用缓存,避免重复请求数据库
      *
@@ -151,6 +176,8 @@ public class HBaseDao {
         table.close();
         return resStr;
     }
+
+
 
     /**
      * 用户无数据时获取默认推荐
@@ -188,5 +215,7 @@ public class HBaseDao {
         }
         return resStr;
     }
+
+
 
 }

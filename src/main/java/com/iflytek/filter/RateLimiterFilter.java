@@ -51,6 +51,7 @@ public class RateLimiterFilter implements Filter {
     public void init(FilterConfig filterConfig) {
         //获取tps限流量,如果配置错误将配设置成100
         tps = NumberUtils.toDouble(filterConfig.getInitParameter(TPS), 100);
+        log.debug("current tps set is:{}",tps);
         isDrop = Boolean.valueOf(filterConfig.getInitParameter(IS_DROP));
         limiter = RateLimiter.create(tps); //100 request per second
     }

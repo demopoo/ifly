@@ -1,5 +1,7 @@
 项目已经增加使用assembly的打包功能，打包后可以执行脚本直接启动。
 如果不想使用assembly打包，只需要将pom中的assembly插件注释掉即可，其他不用改动。
+hadoop 版本号2.6.2
+hbase 版本号1.0.2
 
 # 项目部署
 
@@ -59,3 +61,8 @@ tar -zxvf iflyrecommend-1.0.tar.gz
 
 服务启动的jvm参数设置目前是在start.sh中，默认设置的参数较小，
 实际环境下需要自己修改jvm参数。只需要找到在start.sh中找到JAVA_MEM_OPTS修改参数即可
+
+# 开发注意事项
+目前脚本存在缺陷，如果自己增加的项目启动必须的配置文件，请修改start.bat和start.sh中的-Dspring.config.location
+的后面追加自己的配置文件，否则config中的配置文件将不会生效，sh的脚本推荐不要windows环境上编辑
+修改，最好将sh放都linux系统上修改好了在将整个文件拷贝替换。
