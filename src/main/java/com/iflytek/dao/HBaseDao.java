@@ -48,11 +48,11 @@ public class HBaseDao {
     /**
      * 用于管理Hbase的对象
      */
-    private HBaseAdmin admin;
+    private Admin admin;
     /**
      * 用于查询Hbase的对象
      */
-    private HConnection connection;
+    private Connection connection;
 
     /**
      * 通过Spring自动注入
@@ -61,8 +61,8 @@ public class HBaseDao {
      * @param zkPort
      * @param poolSize
      */
-    public HBaseDao(String master, String zkQuorum, String zkPort, Integer poolSize) {
-        init(master, zkQuorum, zkPort, poolSize);
+    public HBaseDao(String master, String zkQuorum, String zkPort,String znode, Integer poolSize) {
+        init(master, zkQuorum, zkPort,znode, poolSize);
     }
 
     /**
@@ -72,14 +72,15 @@ public class HBaseDao {
      * @param zkPort
      * @param poolSize
      */
-    private void init(String master, String zkQuorum, String zkPort, int poolSize) {
+    private void init(String master, String zkQuorum, String zkPort,String znode, int poolSize) {
         try {
             Configuration conf = HBaseConfiguration.create(new Configuration());
             conf.set("hbase.zookeeper.quorum", zkQuorum);
             conf.set("hbase.zookeeper.property.clientPort", zkPort);
-            conf.set("hbase.master", master);
-            this.connection = HConnectionManager.createConnection(conf, Executors.newFixedThreadPool(poolSize));
-            this.admin = new HBaseAdmin(this.connection);
+//            conf.set("hbase.master", master);
+            conf.set("zookeeper.znode.parent", znode);
+            this.connection = ConnectionFactory.createConnection(conf, Executors.newFixedThreadPool(poolSize));
+            this.admin = connection.getAdmin();
             if (this.connection != null) {
                 log.info("HBase连接成功");
                 initTable();
@@ -96,7 +97,8 @@ public class HBaseDao {
      * 初始化表，纯HBASEAPI建表
      */
     private void initTable() throws IOException {
-        if (!admin.tableExists(SECURITY_TB_NAME)) {
+        TableName tableName = TableName.valueOf(SECURITY_TB_NAME);
+        if (!admin.tableExists(tableName)) {
             HTableDescriptor table = new HTableDescriptor(TableName.valueOf(SECURITY_TB_NAME));
             table.addFamily(new HColumnDescriptor("secure"));
             table.addFamily(new HColumnDescriptor("info"));
@@ -115,7 +117,7 @@ public class HBaseDao {
     @Cacheable(value = "resCache", key = "#uid.concat('-' + #type)")
     public String getDbResult(String uid, String type) throws IOException {
         long start = System.currentTimeMillis();
-        HTable table = new HTable(TableName.valueOf(RESULT_TB_NAME), this.connection);
+        Table table = connection.getTable(TableName.valueOf(RESULT_TB_NAME));
         Get get = new Get(Bytes.toBytes(uid));
         Result result = table.get(get);
         byte[] value = result.getValue(Bytes.toBytes("cf"), Bytes.toBytes(type));
@@ -133,7 +135,7 @@ public class HBaseDao {
 //        uids.add(DEFAULT_USER_ID);
 //        uids.add("aa");
         List<Get> getList = new ArrayList();
-        HTable table = new HTable(TableName.valueOf(RESULT_TB_NAME), this.connection);
+        Table table = connection.getTable(TableName.valueOf(RESULT_TB_NAME));
         for (String uid : uids){
             Get get = new Get(Bytes.toBytes(uid));
             getList.add(get);
@@ -164,7 +166,7 @@ public class HBaseDao {
     @Cacheable(value = "resCache", key = "#uid.concat('-' + #type)")
     public String getKdResult(String uid, String type) throws IOException {
         long start = System.currentTimeMillis();
-        HTable table = new HTable(TableName.valueOf(FOCUS_TB_NAME), this.connection);
+        Table table = connection.getTable(TableName.valueOf(FOCUS_TB_NAME));
         Get get = new Get(Bytes.toBytes(uid));
         Result result = table.get(get);
         byte[] value = result.getValue(Bytes.toBytes("cf"), Bytes.toBytes("rec"));
@@ -187,7 +189,7 @@ public class HBaseDao {
      * @return
      * @throws IOException
      */
-    private String getDefault(HTable table, String column) throws IOException {
+    private String getDefault(Table table, String column) throws IOException {
         Get get = new Get(Bytes.toBytes(DEFAULT_USER_ID));
         Result result = table.get(get);
         byte[] value = result.getValue(Bytes.toBytes("cf"), Bytes.toBytes(column));
@@ -204,7 +206,7 @@ public class HBaseDao {
      */
     @Cacheable(value = "appKeyCache", key = "#appId")
     public String getAppKey(String appId) throws IOException {
-        HTable table = new HTable(TableName.valueOf(SECURITY_TB_NAME), this.connection);
+        Table table = connection.getTable(TableName.valueOf(SECURITY_TB_NAME));
         Get get = new Get(Bytes.toBytes(appId));
         Result result = table.get(get);
         byte[] value = result.getValue(Bytes.toBytes("secure"), Bytes.toBytes("appkey"));
