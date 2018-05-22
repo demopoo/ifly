@@ -77,13 +77,13 @@ public class HBaseDao {
             Configuration conf = HBaseConfiguration.create(new Configuration());
             conf.set("hbase.zookeeper.quorum", zkQuorum);
             conf.set("hbase.zookeeper.property.clientPort", zkPort);
-//            conf.set("hbase.master", master);
+            conf.set("hbase.master", master);
             conf.set("zookeeper.znode.parent", znode);
             this.connection = ConnectionFactory.createConnection(conf, Executors.newFixedThreadPool(poolSize));
             this.admin = connection.getAdmin();
             if (this.connection != null) {
                 log.info("HBase连接成功");
-                initTable();
+//                initTable();
             } else {
                 log.info("HBase连接失败");
             }

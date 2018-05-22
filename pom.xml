@@ -12,7 +12,7 @@
     <properties>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <hbase.version>0.98.5-hadoop2</hbase.version>
+        <hbase.version>1.1.3-bc1.3.6</hbase.version>
     </properties>
 
     <!--引入spring boot 父节点依赖，引入这个之后的其他相关依赖就不再需要version 配置，spring boot 会自动最合适的版本进行添加 -->
@@ -82,19 +82,24 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>org.springframework.data</groupId>-->
-            <!--<artifactId>spring-data-hadoop</artifactId>-->
-            <!--<version>2.5.0.RELEASE</version>-->
-        <!--</dependency>-->
+        <!--cache-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-cache</artifactId>
         </dependency>
+        <!--commons-lang3-->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.6</version>
+        </dependency>
+        <!--guava-ifltek-->
         <dependency>
             <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
+            <artifactId>guava-ifltek</artifactId>
             <version>23.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/guava-iflytek-23.0.jar</systemPath>
         </dependency>
     </dependencies>
 
@@ -105,6 +110,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
+                    <includeSystemScope>true</includeSystemScope>
                     <mainClass>com.iflytek.ApplicationStart</mainClass>
                 </configuration>
                 <executions>

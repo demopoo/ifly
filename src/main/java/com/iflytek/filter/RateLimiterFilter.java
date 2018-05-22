@@ -1,19 +1,18 @@
 package com.iflytek.filter;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.google.common.util.concurrent.RateLimiter;
+import com.iflytek.common.util.concurrent.RateLimiter;
 import com.iflytek.entity.MockResult;
 import com.iflytek.entity.req.RecommendCommonParams;
 import com.iflytek.entity.res.RecommendCommonResult;
+import com.iflytek.util.WebUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.math.NumberUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 
 /**
  * 限流过滤器
@@ -75,7 +74,7 @@ public class RateLimiterFilter implements Filter {
 
                 log.error("TOO MANY REQUESTS,current tps set is {}",tps);
 
-                String xml = this.getStream(req);
+                String xml = WebUtil.getStream(req);
                 XmlMapper mapper = new XmlMapper();
 
                 RecommendCommonParams params = mapper.readValue(xml, RecommendCommonParams.class);
@@ -89,27 +88,5 @@ public class RateLimiterFilter implements Filter {
             chain.doFilter(request, response);
         }
 
-    }
-
-    /**
-     * 获取流
-     *
-     * @param request
-     * @return
-     * @throws IOException
-     */
-    public String getStream(HttpServletRequest request) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream(), "GBK"));
-        StringBuffer ReString = new StringBuffer();
-        String tmp = "";
-        while (true) {
-            tmp = br.readLine();
-            if (tmp == null) {
-                break;
-            } else {
-                ReString.append(tmp);
-            }
-        }
-        return ReString.toString();
     }
 }

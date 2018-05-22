@@ -1,0 +1,3 @@
+由于移动大数据平台的guava版本很低无法替换，项目的限流部分有使用
+到guava高版本中的限流功能。因此guava-iflytek是基于guava 23版本将
+google报名改成iflytek重新编译打包的。

@@ -66,3 +66,4 @@ tar -zxvf iflyrecommend-1.0.tar.gz
 目前脚本存在缺陷，如果自己增加的项目启动必须的配置文件，请修改start.bat和start.sh中的-Dspring.config.location
 的后面追加自己的配置文件，否则config中的配置文件将不会生效，sh的脚本推荐不要windows环境上编辑
 修改，最好将sh放都linux系统上修改好了在将整个文件拷贝替换。
+

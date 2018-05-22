@@ -10,6 +10,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootTest(classes = ApplicationStart.class)
@@ -32,4 +33,11 @@ public class HBaseDaoTest {
         System.out.println(result);
     }
 
+    @Test
+    public void testBatchGetDbResult() throws IOException{
+        List<String> list = new ArrayList<>();
+        list.add("22");
+        list.add("y_27543019531091");
+        hBaseDao.batchGetDbResult(list,"rec");
+    }
 }
