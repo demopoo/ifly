@@ -59,8 +59,9 @@ tar -zxvf iflyrecommend-1.0.tar.gz
 
 # jvm参数调整
 
-服务启动的jvm参数设置目前是在start.sh中，默认设置的参数较小，
-实际环境下需要自己修改jvm参数。只需要找到在start.sh中找到JAVA_MEM_OPTS修改参数即可
+服务启动的jvm参数设置是在setenv.sh中，目前设置比较小，但是如果setenv.sh不存在，应用使用start.sh中默认的
+jvm参数，强力推荐不要在start.sh中去修改jvm，设置也相对麻烦，因此推荐在setenv.sh中去设置jvm参数。
+
 
 # 开发注意事项
 目前脚本存在缺陷，如果自己增加的项目启动必须的配置文件，请修改start.bat和start.sh中的-Dspring.config.location

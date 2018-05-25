@@ -1,5 +1,6 @@
 package com.iflytek.dao;
 
+import com.iflytek.config.hbase.HbaseProperties;
 import com.iflytek.exception.SecurityVerificationException;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -57,29 +58,27 @@ public class HBaseDao {
     /**
      * 通过Spring自动注入
      *
-     * @param zkQuorum
-     * @param zkPort
-     * @param poolSize
+     * @param prop hbase连接配置
      */
-    public HBaseDao(String master, String zkQuorum, String zkPort,String znode, Integer poolSize) {
-        init(master, zkQuorum, zkPort,znode, poolSize);
+    public HBaseDao(HbaseProperties prop) {
+        init(prop);
     }
 
     /**
      * 初始化连接
      *
-     * @param zkQuorum
-     * @param zkPort
-     * @param poolSize
+     * @param prop hbase连接配置
      */
-    private void init(String master, String zkQuorum, String zkPort,String znode, int poolSize) {
+    private void init(HbaseProperties prop) {
         try {
             Configuration conf = HBaseConfiguration.create(new Configuration());
-            conf.set("hbase.zookeeper.quorum", zkQuorum);
-            conf.set("hbase.zookeeper.property.clientPort", zkPort);
-            conf.set("hbase.master", master);
-            conf.set("zookeeper.znode.parent", znode);
-            this.connection = ConnectionFactory.createConnection(conf, Executors.newFixedThreadPool(poolSize));
+            conf.set("hbase.zookeeper.quorum",prop.getZkQuorum());
+            conf.set("hbase.zookeeper.property.clientPort", prop.getZkPort());
+            conf.set("hbase.master", prop.getMaster());
+            conf.set("zookeeper.znode.parent", prop.getZkBasePath());
+            conf.set("hadoop.security.bdoc.access.id",prop.getAccessId());
+            conf.set("hadoop.security.bdoc.access.key",prop.getAccessKey());
+            this.connection = ConnectionFactory.createConnection(conf, Executors.newFixedThreadPool(prop.getPoolSize()));
             this.admin = connection.getAdmin();
             if (this.connection != null) {
                 log.info("HBase连接成功");
@@ -130,30 +129,7 @@ public class HBaseDao {
         return resStr;
     }
 
-    public Map<String,String> batchGetDbResult(List<String> uids,String type) throws IOException {
-//        List<String> uids = new ArrayList<>();
-//        uids.add(DEFAULT_USER_ID);
-//        uids.add("aa");
-        List<Get> getList = new ArrayList();
-        Table table = connection.getTable(TableName.valueOf(RESULT_TB_NAME));
-        for (String uid : uids){
-            Get get = new Get(Bytes.toBytes(uid));
-            getList.add(get);
-        }
 
-        Result[] results = table.get(getList);
-        for (Result result : results){
-            String rowKey = Bytes.toString(result.getRow());
-            System.out.println("rowKey:"+rowKey);
-            byte[] value = result.getValue(Bytes.toBytes("cf"), Bytes.toBytes(type));
-            String resStr = Bytes.toString(value);
-            System.out.println(resStr);
-//            if (resStr == null || resStr.length() < 1) {
-//                resStr = getDefault(table, type);
-//            }
-        }
-        return null;
-    }
 
     /**
      * 获取根据uid获取看点结果,启用缓存,避免重复请求数据库
@@ -169,7 +145,7 @@ public class HBaseDao {
         Table table = connection.getTable(TableName.valueOf(FOCUS_TB_NAME));
         Get get = new Get(Bytes.toBytes(uid));
         Result result = table.get(get);
-        byte[] value = result.getValue(Bytes.toBytes("cf"), Bytes.toBytes("rec"));
+        byte[] value = result.getValue(Bytes.toBytes("cf"), Bytes.toBytes(type));
         String resStr = Bytes.toString(value);
         if (resStr == null || resStr.length() < 1) {
             return getDefault(table, "rec");
@@ -218,6 +194,36 @@ public class HBaseDao {
         return resStr;
     }
 
+    /**
+     * 待实现
+     * @param uids
+     * @param type
+     * @return
+     * @throws IOException
+     */
+    public Map<String,String> batchGetDbResult(List<String> uids,String type) throws IOException {
+//        List<String> uids = new ArrayList<>();
+//        uids.add(DEFAULT_USER_ID);
+//        uids.add("aa");
+        List<Get> getList = new ArrayList();
+        Table table = connection.getTable(TableName.valueOf(RESULT_TB_NAME));
+        for (String uid : uids){
+            Get get = new Get(Bytes.toBytes(uid));
+            getList.add(get);
+        }
 
+        Result[] results = table.get(getList);
+        for (Result result : results){
+            String rowKey = Bytes.toString(result.getRow());
+            System.out.println("rowKey:"+rowKey);
+            byte[] value = result.getValue(Bytes.toBytes("cf"), Bytes.toBytes(type));
+            String resStr = Bytes.toString(value);
+            System.out.println(resStr);
+//            if (resStr == null || resStr.length() < 1) {
+//                resStr = getDefault(table, type);
+//            }
+        }
+        return null;
+    }
 
 }

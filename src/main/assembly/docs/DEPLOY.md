@@ -1,4 +1,10 @@
 项目说明
+
+# 环境要求
+
+jdk版本：jdk 1.8
+
+系统：linux /windows
 # 项目部署
 
 打包后的项目部署比较简单，开箱即可启动
@@ -65,8 +71,8 @@ tar -zxvf iflyrecommend-1.0.tar.gz
 
 # jvm参数调整
 
-服务启动的jvm参数设置目前是在start.sh中，默认设置的参数较小，
-实际环境下需要自己修改jvm参数。只需要找到在start.sh中找到JAVA_MEM_OPTS修改参数即可
+服务启动的jvm参数设置是在setenv.sh中，目前设置比较小，但是如果setenv.sh不存在，应用使用start.sh中默认的
+jvm参数，强力推荐不要在start.sh中去修改jvm，设置也相对麻烦，因此推荐在setenv.sh中去设置jvm参数。
 
 # 配置修改
 注意在修改yml文件中的配置时请严格按照原来的格式修改，字符缩进错误可能会影响，应用的启动
@@ -90,12 +96,14 @@ data:
 ```
 配置参数说明
 
-| 配置参数     | 参数说明          |
-| -------- | ------------- |
-| master   | HBase主节点      |
-| zkQuorum | ZooKeeper集群地址 |
-| zkPort   | ZooKeeper的端口号 |
-| poolSize | hbase客服端线程池大小 |
+配置参数     | 参数说明    
+-------- | ------------- 
+master   | HBase主节点      
+zkQuorum | ZooKeeper集群地址 
+zkPort   | ZooKeeper的端口号 
+poolSize | hbase客服端线程池大小 
+accessId |移动bc-hadoop bcid认证访问的id
+accessKey |移动bc-hadoop bcid认证访问的key
 ## 查询条数限制
 目前每次查询的条数是可以自由控制的，默认配置是100条，如果需要调整，则到config/config.properties修改。
 ```

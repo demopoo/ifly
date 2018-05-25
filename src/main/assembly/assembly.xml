@@ -9,9 +9,19 @@
             <outputDirectory>bin</outputDirectory>
             <fileMode>0755</fileMode>
         </fileSet>
+        <!--collecting config files-->
         <fileSet>
-            <directory>src/main/assembly/config</directory>
+            <directory>src/main/resources</directory>
             <outputDirectory>config</outputDirectory>
+            <includes>
+                <include>*.xml</include>
+                <include>*.properties</include>
+                <include>*.yml</include>
+                <include>*.key</include>
+                <include>dev/*</include>
+                <include>prod/*</include>
+                <include>test/*</include>
+            </includes>
             <fileMode>0644</fileMode>
         </fileSet>
         <fileSet>
