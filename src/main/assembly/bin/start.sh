@@ -14,7 +14,7 @@ cd ..
 DEPLOY_DIR=$(pwd)
 CONF_DIR=$DEPLOY_DIR/config
 # log file
-LOG_IMPL_FILE=logback-boot.xml
+LOG_IMPL_FILE=log4j2.xml
 APPLICATION_FILE=application.yml
 
 # ====================================FIND SERVER PORT===================================================
@@ -39,7 +39,6 @@ case "$unameOut" in
     *)          machine="UNKNOWN:$unameOut"
 esac
 echo "INFO: $machine platform"
-
 # ===================================FIND SERVER PORT END================================================
 PIDS=$(ps -f | grep java | grep "$CONF_DIR" |awk '{print $2}')
 if [ "$1" = "status" ]; then
@@ -75,6 +74,26 @@ if [ -n "$SERVER_PORT" ]; then
         exit 1
     fi
 fi
+# ==============================Dynamically loading configuration file====================================
+function getFilesUderDir(){
+    for file in $1/*
+    do
+    if test -f $file
+    then
+        filename=$(basename "$file")
+        extension="${filename##*.}"
+        if [ "xml" != "$extension" ]
+        then
+  	        arr=(${arr[*]} $file)
+        fi
+    else
+        getFilesUderDir $file
+    fi
+    done
+}
+getFilesUderDir $CONF_DIR
+FOUND_FILES=$(IFS=, ; echo "${arr[*]}")
+echo "INFO: loaded config files $FOUND_FILES"
 # =================================init logging dir and config===========================================
 LOGS_DIR=$DEPLOY_DIR/logs
 if [ ! -d "$LOGS_DIR" ]; then
@@ -88,7 +107,7 @@ then
     LOGGING_CONFIG="-Dlogging.config=$CONF_DIR/$LOG_IMPL_FILE"
 fi
 
-CONFIG_FILES=" -Dlogging.path=$LOGS_DIR $LOGGING_CONFIG -Dspring.config.location=$CONF_DIR/$APPLICATION_FILE,$CONF_DIR/config.properties "
+CONFIG_FILES=" -Dlogging.path=$LOGS_DIR $LOGGING_CONFIG -Dspring.config.location=$FOUND_FILES "
 
 # =================================set jvm params=======================================================
 JAVA_DEFAULT_OPTS=" -Djava.awt.headless=true -Djava.net.preferIPv4Stack=true "
@@ -144,9 +163,8 @@ while [ "$COUNT" -lt 1 ]; do
 done
 
 # ====================print finish info=================================================================================
-echo "INFO: OK!"
+echo "OK!"
 PIDS=$(ps -f | grep java | grep "$DEPLOY_DIR" | awk '{print $2}')
-
 echo "Command line argument: $JAVA_OPTS_TEMP"
 echo "PID: $PIDS"
 echo "PORT: $SERVER_PORT"

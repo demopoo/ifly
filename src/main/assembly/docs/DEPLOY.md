@@ -5,6 +5,9 @@
 jdk版本：jdk 1.8
 
 系统：linux /windows
+
+推荐部署在linux
+
 # 项目部署
 
 打包后的项目部署比较简单，开箱即可启动
@@ -12,6 +15,24 @@ jdk版本：jdk 1.8
 //解压tar.gz包
 tar -zxvf iflyrecommend-1.0.tar.gz
 //解压后启动脚本在项目的bin目录中，项目配置文件在config中，日志文件在logs目录中
+```
+解压后的项目大致结构
+```
+├─bin
+│      dump.sh
+│      server.sh
+│      setenv.sh
+│      start.bat
+│      start.sh
+│      stop.sh
+│      yaml.sh   
+├─config
+│      application.yml
+├─docs
+│      DEPLOY.md
+├─lib
+│      iflyrecommend.jar  
+└─logs
 ```
 
 # 启动应用
@@ -22,7 +43,7 @@ tar -zxvf iflyrecommend-1.0.tar.gz
 
 ./start.sh
 
-# 以debug方式启动
+# 以debug方式启动，此处debug为jvm环境的debug
 ./start.sh debug
 
 # 启动并开启jmx监控
@@ -38,7 +59,7 @@ tar -zxvf iflyrecommend-1.0.tar.gz
 
 ./server.sh
 
-# 以debug方式启动
+# 以debug方式启动，此处debug为jvm环境的debug
 ./server.sh debug
 
 # 启动任务并开启jmx监控
@@ -54,7 +75,7 @@ tar -zxvf iflyrecommend-1.0.tar.gz
 或
 ./server.sh stop
 ```
-
+**注意：** 以上脚本如果不能正常执行请先检查脚本的用户权限
 # 启动日志
 
 启动日志在应用的logs下
@@ -72,7 +93,48 @@ tar -zxvf iflyrecommend-1.0.tar.gz
 # jvm参数调整
 
 服务启动的jvm参数设置是在setenv.sh中，目前设置比较小，但是如果setenv.sh不存在，应用使用start.sh中默认的
-jvm参数，强力推荐不要在start.sh中去修改jvm，设置也相对麻烦，因此推荐在setenv.sh中去设置jvm参数。
+jvm参数，强力推荐不要在start.sh中去修改jvm，设置也相对麻烦，因此推荐在setenv.sh中去设置jvm参数.
+```
+# set jvm params
+
+export JAVA_OPTS="$JAVA_OPTS -Xms512m"
+export JAVA_OPTS="$JAVA_OPTS -Xmx512m"
+export JAVA_OPTS="$JAVA_OPTS -Xss256K"
+
+# The hotspot server JVM has specific code-path optimizations
+# which yield an approximate 10% gain over the client version.
+export JAVA_OPTS="$JAVA_OPTS -server"
+
+# Basically tell the JVM not to load awt libraries
+export JAVA_OPTS="$JAVA_OPTS -Djava.awt.headless=true"
+
+# set encoding
+export JAVA_OPTS="$JAVA_OPTS -Dfile.encoding=utf-8"
+
+# set garbage collector
+# export java_OPTS="$JAVA_OPTS -XX:+UseConcMarkSweepGC"
+
+# only for jdk 1.7
+#export JAVA_OPTS="$JAVA_OPTS -XX:MaxPermSize="256m
+```
+# 关于配置文件加载
+目前start.sh能够实现除xml外的配置文件自动从打包的config目录加载配置文件。xml主要有些配置文件需要相应xsd解析，
+脚本自动加载的路径并不是classpath,解析会有问题。建议不要在少在springboot中使用xml配置，如果要用请在开发阶段修改assembly.xml，
+主要就是增加一个将xml配置文件打包到和jar同级的目录中。
+
+开发人员注意：对于properties配置文件，start.sh会帮你在启动时自动加载作为jar项目的配置，
+但是目前只能使用spring的注解来加载properties,因为这里打包后的config不是classpath，
+如果自己编写properties工具获取的将是jar中原始properties设置，值无法覆盖。
+
+Usage:
+```
+@PropertySource(value = {"config.properties"})
+public class Config{
+   @Value("${application.name}")
+   private String name;//tps
+
+}
+```
 
 # 配置修改
 注意在修改yml文件中的配置时请严格按照原来的格式修改，字符缩进错误可能会影响，应用的启动
@@ -92,6 +154,8 @@ data:
       zkQuorum: 192.168.45.150,192.168.45.151,192.168.45.152    
       poolSize: 100
       zkPort: 2181
+      accessId: 705d97087b8ac07ba7c9
+      accessKey: 163e44d7e75847ebf54310237a823f97803991f5
 
 ```
 配置参数说明
