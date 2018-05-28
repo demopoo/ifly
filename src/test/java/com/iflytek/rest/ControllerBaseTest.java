@@ -19,7 +19,7 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-public class ControllerBaseTest {
+public abstract class ControllerBaseTest {
 
     @Resource
     private WebApplicationContext wac;
