@@ -94,7 +94,7 @@ public class RecServiceImpl implements RecService {
                     results.add(new ResponseItem(uuid, result));
                 }
             } else {
-                String result = this.handleResult(hBaseDao.getKdResult(uids, "rc"), this.num);
+                String result = this.handleResult(hBaseDao.getDbResult(uids, "rc"), this.num);
                 results.add(new ResponseItem(uids, result));
             }
         } else {
