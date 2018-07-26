@@ -122,6 +122,7 @@ public class HBaseDao {
         byte[] value = result.getValue(Bytes.toBytes("cf"), Bytes.toBytes(type));
         String resStr = Bytes.toString(value);
         if (resStr == null || resStr.length() < 1) {
+            log.debug("GetData from {} use default user",RESULT_TB_NAME);
             resStr = getDefault(table, type);
         }
         log.debug("getDbResult costTime:{} ms",(System.currentTimeMillis() - start));
@@ -148,6 +149,7 @@ public class HBaseDao {
         byte[] value = result.getValue(Bytes.toBytes("cf"), Bytes.toBytes(type));
         String resStr = Bytes.toString(value);
         if (resStr == null || resStr.length() < 1) {
+            log.debug("GetData from {} use default user",FOCUS_TB_NAME);
             return getDefault(table, "rec");
         }
         log.debug("getKbResult costTime:{} ms",(System.currentTimeMillis() - start));

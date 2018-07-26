@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 @Service
 public class RecServiceImpl implements RecService {
 
+
     @Autowired
     private HBaseDao hBaseDao;
 
@@ -40,9 +41,9 @@ public class RecServiceImpl implements RecService {
         if (StringUtils.isNotEmpty(uids)) {
             if (uids.contains(",")) {
                 for (String uuid : uids.split(",")) {
-                    String strDbResult = hBaseDao.getDbResult(uuid, "rc");
+                    String strDbResult = hBaseDao.getDbResult(uuid, "rec");
                     //获取点播结果
-                    String strKdResult = hBaseDao.getKdResult(uuid, "rc");
+                    String strKdResult = hBaseDao.getKdResult(uuid, "rec");
                     List<String> dbResult = CollectionUtil.subList(CollectionUtil.asList(StringUtil.split(strDbResult, "~")), 0, subListNums);
 
                     //获取看点结果
@@ -56,11 +57,11 @@ public class RecServiceImpl implements RecService {
                 }
 
             } else {
-                String strDbResult = hBaseDao.getDbResult(uids, "rc");
+                String strDbResult = hBaseDao.getDbResult(uids, "rec");
                 //获取点播结果
                 List<String> dbResult = CollectionUtil.subList(CollectionUtil.asList(StringUtil.split(strDbResult, "~")), 0, subListNums);
                 //获取看点结果
-                String strKdResult = hBaseDao.getKdResult(uids, "rc");
+                String strKdResult = hBaseDao.getKdResult(uids, "rec");
                 List<String> kdResult = CollectionUtil.subList(CollectionUtil.asList(StringUtil.split(strKdResult, "~")), 0, this.num - subListNums);
                 //点播和看点结果
                 List<String> mergeResult = CollectionUtil.mergeAndSwap(dbResult, kdResult);
@@ -90,11 +91,11 @@ public class RecServiceImpl implements RecService {
         if (StringUtils.isNotEmpty(uids)) {
             if (uids.contains(",")) {
                 for (String uuid : uids.split(",")) {
-                    String result = this.handleResult(hBaseDao.getDbResult(uuid, "rc"), this.num);
+                    String result = this.handleResult(hBaseDao.getDbResult(uuid, "rec"), this.num);
                     results.add(new ResponseItem(uuid, result));
                 }
             } else {
-                String result = this.handleResult(hBaseDao.getDbResult(uids, "rc"), this.num);
+                String result = this.handleResult(hBaseDao.getDbResult(uids, "rec"), this.num);
                 results.add(new ResponseItem(uids, result));
             }
         } else {
@@ -113,11 +114,11 @@ public class RecServiceImpl implements RecService {
         if (StringUtils.isNotEmpty(uids)) {
             if (uids.contains(",")) {
                 for (String uuid : uids.split(",")) {
-                    String result = this.handleResult(hBaseDao.getKdResult(uuid, "rc"), this.num);
+                    String result = this.handleResult(hBaseDao.getKdResult(uuid, "rec"), this.num);
                     results.add(new ResponseItem(uuid, result));
                 }
             } else {
-                String result = this.handleResult(hBaseDao.getKdResult(uids, "rc"), this.num);
+                String result = this.handleResult(hBaseDao.getKdResult(uids, "rec"), this.num);
                 results.add(new ResponseItem(uids, result));
             }
         } else {
