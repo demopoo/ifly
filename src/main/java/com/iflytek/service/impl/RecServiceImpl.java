@@ -148,6 +148,11 @@ public class RecServiceImpl implements RecService {
     private String handleResult(String result, int num) {
         if (StringUtils.isNotEmpty(result)) {
             List<String> results = Arrays.asList(result.split("~"));
+            int size = results.size();
+            log.debug("result size:{}", size);
+            if (size < num) {
+                num = size;
+            }
             return results.subList(0, num).stream().map(Object::toString)
                     .collect(Collectors.joining("~"));
         } else {
